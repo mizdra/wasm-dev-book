@@ -1,0 +1,17 @@
+{
+  "name": "wasm-dev-env-construction",
+  "version": "0.0.0",
+  "description": "WebAssembly開発環境構築の解説書.",
+  "main": "index.js",
+  "repository": "https://github.com/mizdra/wasm-dev-env-construction",
+  "author": "mizdra <pp.mizdra@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "devDependencies": {
+    "vuepress": "^0.8.4"
+  }
+}
