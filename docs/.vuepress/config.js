@@ -6,6 +6,11 @@ module.exports = {
       '/',
       '/first',
       '/hello-wasm',
-    ]
-  }
+    ],
+  },
+  markdown: {
+    config: (md) => {
+      md.use(require('markdown-it-footnote'))
+    },
+  },
 }
