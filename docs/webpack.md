@@ -1,4 +1,6 @@
-# Webpack による開発環境構築
+# Webpack の利用
+
+## Webpack を試す
 
 Webpack は Web フロントエンドのための拡張性の高い, 高機能なモジュールバンドラです. 現在 Web フロントエンドで使われているモジュールバンドラの中で, 最もユーザの多いのがこの Webpack です.
 
@@ -136,9 +138,12 @@ i 「wdm」: Compiled successfully.
 <!-- prettier-ignore -->
 [^26]: [Unable to import WebAssembly modules bigger than 4KB · Issue #6475 · webpack/webpack](https://github.com/webpack/webpack/issues/6475)
 
-ブラウザのコンソールに `3` が出力されていれば成功です. ただ, もしかするとブラウザのコンソールに次のエラーが出ている人がいるかもしれません.
+ブラウザのコンソールに `3` が出力されていれば成功です.
 
-```bash
+::: warning
+もしかするとブラウザのコンソールに次のエラーが出ている人がいるかもしれません.
+
+```
 Uncaught (in promise) RangeError: WebAssembly.Instance is disallowed on the
 main thread, if the buffer size is larger than 4KB.
 Use WebAssembly.instantiate.
@@ -151,6 +156,7 @@ Use WebAssembly.instantiate.
 ```
 
 これは WebAssembly を含むプロジェクトをビルドした時に Google Chrome で実行できないコードが出力されるという Webpack のバグに起因しています[^26]. もし上記のエラーが出た場合は Google Chrome の代わりに Mozilla Firefox を使って下さい.
+:::
 
 ## WebAssembly から JavaScript の関数を呼び出す
 
@@ -235,11 +241,11 @@ import("./webpack_wasm_skeleton").then(module => {
 });
 ```
 
-特に前節でやったことと変わりはありませんね. 編集内容を保存してブラウザのコンソールを見てみましょう. 出力に `2545341989` が追加されていれば成功です!
+特に[前節](/parcel.md)でやったことと変わりはありませんね. 編集内容を保存してブラウザのコンソールを見てみましょう. 出力に `2545341989` が追加されていれば成功です!
 
 ## コレクション, 文字列の受け渡し
 
-さて, ここから wasm-bindgen の本領が発揮されます. まずは wasm-bindgen を使って前節で出てきた `sum` 関数を実装してみましょう. `/src/lib.rs` に以下を追加します.
+さて, ここから wasm-bindgen の本領が発揮されます. まずは wasm-bindgen を使って[前節](/parcel.md)で出てきた `sum` 関数を実装してみましょう. `/src/lib.rs` に以下を追加します.
 
 ```rust
 // ...
@@ -313,7 +319,7 @@ import("./webpack_wasm_skeleton").then(module => {
 });
 ```
 
-ブラウザのコンソールを開いて出力を確認してみましょう. 正しくコードが書けていれば `30` と `Hello, World!` が出力に追加されているはずです. `"Hello, World!"` が出力できたのでこれで本当の WebAssembly 入門が終わったと言えそうですね! ハハハ...
+ブラウザのコンソールを開いて出力を確認してみましょう. 正しくコードが書けていれば `30` と `Hello, World!` が出力に追加されているはずです. `"Hello, World!"` が出力できたのでこれで本当の WebAssembly 入門が終わったと言えそうですね :P
 
 ## 本節のまとめ
 

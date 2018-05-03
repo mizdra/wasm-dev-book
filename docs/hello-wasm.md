@@ -1,6 +1,6 @@
 # WebAssembly 入門
 
-## 最小構成で動かす
+## WebAssembly を試す
 
 それでは WebAssembly の動作を理解するため, WebAssembly の入門から始めましょう! 引数として受け取った 2 つの数値の和を返す単純な関数 `add` を Rust で実装して, WebAssembly にコンパイルして JavaScript から呼び出してみます. まずは Rust のインストールを行います.
 
@@ -19,7 +19,7 @@ $ rustup target add wasm32-unknown-unknown
 <!-- prettier-ignore -->
 [^4]: Rust のビルドシステム, 及びパッケージマネージャ.
 
-インストールが終わったら Cargo[^4]を用いて Rust のプロジェクトを作成しましょう.
+インストールが終わったら [Cargo](https://rust-lang-ja.github.io/the-rust-programming-language-ja/1.6/book/getting-started.html#hello-cargo)[^4]を用いて Rust のプロジェクトを作成しましょう.
 
 ```bash
 $ cargo new --lib hello_world_wasm
@@ -52,7 +52,7 @@ pub fn add(a: i32, b: i32) -> i32 {
 }
 ```
 
-2 つの符号付き 32bit 整数を引数として受け取り, その和を返す関数です. `#[no_mangle]` はアトリビュートと言い, Java のデコレータのようにブロックやメソッドなどを修飾する構文です. `#[no_mangle]` では「Rust コンパイラに次の関数の名前をマングリングせずにコンパイルせよ」と指示します. これにより, JavaScript から `add` という名前で関数にアクセスできるようになります. また, 関数を公開して外部から呼び出せるようにするため `pub` キーワードを付けています.
+2 つの符号付き 32bit 整数を引数として受け取り, その和を返す関数です. `#[no_mangle]` は[アトリビュート](https://rust-lang-ja.github.io/the-rust-programming-language-ja/1.6/book/attributes.html)と言い, Java のデコレータのようにブロックやメソッドなどを修飾する構文です. `#[no_mangle]` では「Rust コンパイラに次の関数の名前をマングリングせずにコンパイルせよ」と指示します. これにより, JavaScript から `add` という名前で関数にアクセスできるようになります. また, 関数を公開して外部から呼び出せるようにするため [`pub` キーワード](https://rust-lang-ja.github.io/the-rust-programming-language-ja/1.6/book/crates-and-modules.html)を付けています.
 
 Rust のプロジェクトを WebAssembly にコンパイルするには次のコマンドを実行します.
 
@@ -63,7 +63,9 @@ $ cargo build --target=wasm32-unknown-unknown --release
 <!-- prettier-ignore -->
 [^6]: 実のことを言うとつい最近この問題は解決されました (参考: [Support non-optimized builds on pure wasm backend · Issue #1 · rust-lang-nursery/rust-wasm](https://github.com/rust-lang-nursery/rust-wasm/issues/1)). しかしながら念には念を入れて, ここでは `release` オプションを付けています.
 
+:::tip
 `release` オプションにより最適化したバイナリを生成するよう指示しています. これは Rust の WebAssembly 向けコンパイルがまだ安定しておらず, 最適化されていないバイナリにバグが含まれる可能性があるため付けています[^6]. 時が経てば `release` オプションは不要になることでしょう.
+:::
 
 コンパイルが成功すれば `/target/wasm32-unknown-unknown/release/hello_world_wasm.wasm` が生成されているはずです. 早速これを JavaScript から実行してみましょう. `/index.html` を作成します.
 
@@ -90,7 +92,7 @@ $ cargo build --target=wasm32-unknown-unknown --release
 
 ここで起こっていることを順に追っていきます.
 
-1.  Fetch API を用いて wasm ファイルを読み込む
+1.  [Fetch API](https://developer.mozilla.org/ja/docs/Web/API/Fetch_API/Using_Fetch) を用いて wasm ファイルを読み込む
 2.  `response.arrayBuffer` でファイルのデータをバイナリ配列に変換
 3.  `WebAssembly.instantiate` でバイナリ配列を WebAssembly コードとしてコンパイル・インスタンス化
 4.  WebAssembly インスタンスから `add` にアクセスし, 呼び出す

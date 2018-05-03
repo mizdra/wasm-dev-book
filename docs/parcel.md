@@ -1,4 +1,6 @@
-# Parcel による開発環境構築
+# Parcel の利用
+
+## Parcel を試す
 
 Parcel は Web フロントエンドのための高速でゼロコンフィグレーション(設定ファイルが不要)なモジュールバンドラです. 少し前に以下の記事にて話題になったかと思います.
 
@@ -7,7 +9,7 @@ Parcel は Web フロントエンドのための高速でゼロコンフィグ�
 <!-- prettier-ignore -->
 [^16]: [Parcel v1.5.0 released: Source Maps, WebAssembly, Rust, and more!](https://medium.com/@devongovett/parcel-v1-5-0-released-source-maps-webassembly-rust-and-more-3a6385e43b95)
 
-2018 年 1 月末にリリースされた Parcel v1.5.0 では WebAssembly と Rust のサポートが入りました[^16]. これにより, 現時点で最も WebAssembly を試しやすい開発環境を Parcel を用いて構築することができるようになりました. 早速試してみましょう.
+2018 年 1 月末にリリースされた Parcel v1.5.0 では WebAssembly と Rust がサポートされました[^16]. これにより, 現時点で最も WebAssembly を試しやすい開発環境を Parcel を用いて構築することができるようになりました. 早速試してみましょう.
 
 まずプロジェクトを作成, npm プロジェクトとして初期化して Parcel をインストールします.
 
@@ -26,7 +28,7 @@ pub fn add(a: i32, b: i32) -> i32 {
 }
 ```
 
-前節で書いたコードと全く同じですね. 次にこの Rust の関数を WebAssembly として呼び出す JavaScript `/src/index.js` を作成します.
+[前節](/hello-wasm.md)で書いたコードと全く同じですね. 次にこの Rust の関数を WebAssembly として呼び出す JavaScript `/src/index.js` を作成します.
 
 ```javascript
 import { add } from "./lib.rs";
@@ -34,7 +36,7 @@ import { add } from "./lib.rs";
 console.log(add(1, 2));
 ```
 
-ES Modules の `import` 構文を用いて `lib.rs` を読み込もうとしています. Parcel はこの構文を見つけると自動で Rust を WebAssembly にコンパイルし, 前節で解説したような JavaScript コードへと変換します. このように Parcel によって WebAssembly の fetch やコンパイル, インスタンス化といったプロセスが隠蔽され, Rust の関数を WebAssembly として呼び出すという本質的な作業に集中できるようになります.
+ES Modules の `import` 構文を用いて `lib.rs` を読み込もうとしています. Parcel はこの構文を見つけると自動で Rust を WebAssembly にコンパイルし, [前節](/hello-wasm.md)で解説したような JavaScript コードへと変換します. このように Parcel によって WebAssembly の fetch やコンパイル, インスタンス化といったプロセスが隠蔽され, Rust の関数を WebAssembly として呼び出すという本質的な作業に集中できるようになります.
 
 続いてプロジェクトのエントリポイントとなる `/src/index.html` を作成します.
 
@@ -82,7 +84,7 @@ Built in 2.95s.
 
 ## Rust のサードパーティ製ライブラリの利用
 
-ひとまず Parcel でどのように WebAssembly を動かすかを確認できたので, 次は前節で行っていたような外部ライブラリの呼び出しを Parcel を使って実現してみましょう. `/Cargo.toml` を作成し, 依存する Rust ライブラリを Parcel に伝わるようにします.
+ひとまず Parcel でどのように WebAssembly を動かすかを確認できたので, 次は[前節](/hello-wasm.md)で行っていたような外部ライブラリの呼び出しを Parcel を使って実現してみましょう. `/Cargo.toml` を作成し, 依存する Rust ライブラリを Parcel に伝わるようにします.
 
 ```ini
 [package]
@@ -137,10 +139,7 @@ Hot module replacement[^17]により編集内容を保存すればブラウザ�
 
 さて, このように Parcel を使えば WebAssembly の開発環境が簡単に構築できることが分かりました. しかしながら, Parcel による開発環境ではデメリットがあります. ここでは 2 つ例を挙げます.
 
-<!-- prettier-ignore -->
-[^29]: [WASM loader does not expose importObject · Issue #647 · parcel-bundler/parcel](https://github.com/parcel-bundler/parcel/issues/647)
-
-1 つ目は前節で行った, WebAssembly からの JavaScript の関数の呼び出しができないことです. 前節では WebAssembly から呼び出したい JavaScript の関数を `WebAssembly.instantiate` に渡すことでこれを実現していました. しかし Parcel では Parcel 自身が自動で WebAssrmbly のコンパイルやインスタンス化を行うコードを生成してしまうため, 開発者が `WebAssembly.instantiate` に JavaScript の関数を渡す余地がありません. こちらの問題は現在 [^29] にて議論されています.
+1 つ目は[前節](/hello-wasm.md)で行った, WebAssembly からの JavaScript の関数の呼び出しができないことです. [前節](/hello-wasm.md)では WebAssembly から呼び出したい JavaScript の関数を `WebAssembly.instantiate` に渡すことでこれを実現していました. しかし Parcel では Parcel 自身が自動で WebAssrmbly のコンパイルやインスタンス化を行うコードを生成してしまうため, 開発者が `WebAssembly.instantiate` に JavaScript の関数を渡す余地がありません. こちらの問題は現在 [Parcel の Issue](https://github.com/parcel-bundler/parcel/issues/647) にて議論されています.
 
 2 つ目は WebAssembly が基本的な数値型しか扱うことができないことです. 次の例を見て下さい.
 
@@ -164,7 +163,7 @@ console.log(sum(new Int32Array([1, 2, 3, 4, 5]))); // 0
 <!-- prettier-ignore -->
 [^18]: [Use Rust WASM bindgen · Issue #775 · parcel-bundler/parcel](https://github.com/parcel-bundler/parcel/issues/775)
 
-そこで wasm-bindgen というライブラリが登場します. このライブラリはメモリに関連する処理をラッパーで覆い隠し, JavaScript, WebAssembly 間でメモリを意識せず文字列や配列などをやりとりすることが出来るようにします. しかしながら現時点で Parcel からはこのライブラリを利用することができません[^18]. もし wasm-bindgen を利用するのであれば Parcel 以外のモジュールバンドラを使うか, 前節のようにモジュールバンドラを使わずに開発する必要があります.
+そこで wasm-bindgen というライブラリが登場します. このライブラリはメモリに関連する処理をラッパーで覆い隠し, JavaScript, WebAssembly 間でメモリを意識せず文字列や配列などをやりとりすることが出来るようにします. しかしながら現時点で Parcel からはこのライブラリを利用することができません[^18]. もし wasm-bindgen を利用するのであれば Parcel 以外のモジュールバンドラを使うか, [前節](/hello-wasm.md)のようにモジュールバンドラを使わずに開発する必要があります.
 
 ## 本節のまとめ
 
