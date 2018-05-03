@@ -6,6 +6,8 @@ module.exports = {
       '/',
       '/first',
       '/hello-wasm',
+      '/parcel',
+      '/webpack',
     ],
   },
   markdown: {
