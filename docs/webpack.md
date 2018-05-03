@@ -1,14 +1,22 @@
 # Webpack の利用
 
+:::tip
+
+本節で作成するプロジェクトは以下のリポジトリで公開しています.
+
+* [mizdra / webpack-wasm-skeleton · GitLab](https://gitlab.mma.club.uec.ac.jp/mizdra/webpack-wasm-skeleton)
+
+:::
+
 ## Webpack を試す
 
-Webpack は Web フロントエンドのための拡張性の高い, 高機能なモジュールバンドラです. 現在 Web フロントエンドで使われているモジュールバンドラの中で, 最もユーザの多いのがこの Webpack です.
+Webpack は Web フロントエンドのための拡張性の高い, 高機能なモジュールバンドラです.
 
 <!-- prettier-ignore -->
 [^19]: [webpack 4: released today!! – webpack – Medium](https://medium.com/webpack/webpack-4-released-today-6cdb994702d4)
 
 <!-- prettier-ignore -->
-[^20]: [wasm-bindgen/README.md at 0.1.0 · alexcrichton/wasm-bindgen](https://github.com/alexcrichton/wasm-bindgen/blob/0.1.0/README.md#basic-usage)
+[^20]: [wasm-bindgen/README.md at 0.1.0 · rustwasm/wasm-bindgen](https://github.com/rustwasm/wasm-bindgen/blob/0.1.0/README.md#basic-usage)
 
 2018 年 2 月末にリリースされた Webpack v4.0.0 にて, WebAssembly のサポートが入りました[^19]. これに合わせて wasm-bindgen も Webpack v4.x.x に対応し, Webpack を使って高機能な WebAssembly 開発環境を構築することができるようになりました. 試してみましょう!
 
@@ -26,8 +34,7 @@ $ cargo install cargo-watch
 $ cargo install wasm-bindgen-cli
 
 $ npm init -y
-$ npm install --save-dev webpack webpack-cli \
-  webpack-dev-server html-webpack-plugin
+$ npm install --save-dev webpack webpack-cli webpack-dev-server html-webpack-plugin
 ```
 
 `/src/lib.rs` を作成します.
@@ -89,23 +96,28 @@ crate-type = ["cdylib"]
   // ...
   "scripts": {
     "prebuild:wasm": "cargo +nightly check",
-    "build:wasm": "cargo +nightly build --target wasm32-unknown-unknown
---release",
-    "postbuild:wasm": "wasm-bindgen
-target/wasm32-unknown-unknown/release/webpack_wasm_skeleton.wasm--out-dir src",
+    "build:wasm":
+      "cargo +nightly build --target wasm32-unknown-unknown --release",
+    "postbuild:wasm":
+      "wasm-bindgen target/wasm32-unknown-unknown/release/webpack_wasm_skeleton.wasm--out-dir src",
     "build:js": "webpack --mode production",
     "build": "run-s build:wasm build:js",
-    "dev:wasm": "cargo watch
--i 'src/{webpack_wasm_skeleton_bg.wasm,webpack_wasm_skeleton.js}'
--s 'npm run build:wasm'",
+    "dev:wasm":
+      "cargo watch -i 'src/{webpack_wasm_skeleton_bg.wasm,webpack_wasm_skeleton.js}' -s 'npm run build:wasm'",
     "dev:js": "webpack-dev-server --mode development",
     "dev": "run-p dev:wasm dev:js"
-  },
+  }
   // ...
 }
 ```
 
-`npm run dev` で開発用ビルド, `npm run build` でプロダクションビルドです. プロジェクトをビルドすると wasm-bindgen-cli により `src` ディレクトリ配下に WebAssembly ファイル `webpack_wasm_skeleton_bg.wasm` とその JavaScript ラッパーの`webpack_wasm_skeleton.js` が生成されます. WebAssembly を利用する場合は WebAssembly を直接読み込むのではなく, この JavaScript ラッパーを読み込んでラッパー経由で WebAssembly を利用します.
+:::warning
+
+TODO: `npm-scripts` について
+
+:::
+
+`npm run dev` で開発用ビルド, `npm run build` で本番用ビルドです. プロジェクトをビルドすると wasm-bindgen-cli により `src` ディレクトリ配下に WebAssembly ファイル `webpack_wasm_skeleton_bg.wasm` とその JavaScript ラッパーの`webpack_wasm_skeleton.js` が生成されます. WebAssembly を利用する場合は WebAssembly を直接読み込むのではなく, この JavaScript ラッパーを読み込んでラッパー経由で WebAssembly を利用します.
 
 それではラッパーを経由して WebAssembly の関数を呼び出す `/src/index.js` を作成しましょう.
 
@@ -192,9 +204,9 @@ import("./webpack_wasm_skeleton").then(module => {
 <!-- prettier-ignore -->
 [^27]: バインディングされるアイテムを静的に解析することが容易という理由で「宣言的」と表現しています.
 
-ここでのポイントは `extern` ブロックを `#[wasm_bindgen(module = "./index")]` で修飾していることです. こうすると wasm-bindgen は `/src/index.js` で export されているアイテムを `extern` ブロックで定義されるアイテムへとバインディングします. やっていることは 2 節のものと同じですが, こちらの手法の方がより宣言的でモジュール指向です[^27]. JavaScript 側では ES Modules の `export` キーワードを用いて Rust 側からアイテムが参照できるようにしています. また, wasm-bindgen が JavaScript の関数を呼び出している箇所を自動で `unsafe` で囲ってくれるので `unsafe` ブロックを使用していないことにも注意して下さい.
+ここでのポイントは `extern` ブロックを `#[wasm_bindgen(module = "./index")]` で修飾していることです. こうすると wasm-bindgen は `/src/index.js` で export されているアイテムを `extern` ブロックで定義されるアイテムへとバインディングします. やっていることは[WebAssembly 入門](/hello-wasm.md)の節のものと同じですが, こちらの手法の方がより宣言的でモジュール指向です[^27]. JavaScript 側では ES Modules の `export` キーワードを用いて Rust 側からアイテムが参照できるようにしています. また, wasm-bindgen が JavaScript の関数を呼び出している箇所を自動で `unsafe` で囲ってくれるので `unsafe` ブロックを使用していないことにも注意して下さい.
 
-Hot module replacement により編集内容を保存すればブラウザのページが更新されるはずです! コンソールにタイムスタンプが出力されましたか? リロードする度に出力される値が変わっていれば成功です!
+[Hot module replacement](https://webpack.js.org/concepts/hot-module-replacement) により編集内容を保存すればブラウザのページが更新されるはずです! コンソールにタイムスタンプが出力されましたか? リロードする度に出力される値が変わっていれば成功です!
 
 ## Rust のサードパーティ製ライブラリの利用
 
@@ -321,6 +333,12 @@ import("./webpack_wasm_skeleton").then(module => {
 
 ブラウザのコンソールを開いて出力を確認してみましょう. 正しくコードが書けていれば `30` と `Hello, World!` が出力に追加されているはずです. `"Hello, World!"` が出力できたのでこれで本当の WebAssembly 入門が終わったと言えそうですね :P
 
+:::tip
+
+TODO: その他の型の扱いについて触れる
+
+:::
+
 ## 本節のまとめ
 
 本節では次のことを学びました.
@@ -329,7 +347,3 @@ import("./webpack_wasm_skeleton").then(module => {
 * Webpack と wasm-bindgen を使って Rust のサードパーティ製ライブラリを利用した
 * Webpack と wasm-bindgen を使ってコレクションや文字列をやり取りする方法を学んだ
 * `"Hello, World!"` を出力して本当の WebAssembly 入門を終えた
-
-本節で作成したプロジェクトは以下のリポジトリで公開しています.
-
-* [mizdra / webpack-wasm-skeleton · GitLab](https://gitlab.mma.club.uec.ac.jp/mizdra/webpack-wasm-skeleton)

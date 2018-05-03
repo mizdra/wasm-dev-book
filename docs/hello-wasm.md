@@ -1,5 +1,13 @@
 # WebAssembly 入門
 
+:::tip
+
+本節で作成するプロジェクトは以下のリポジトリで公開しています.
+
+* [mizdra / hello_world_wasm · GitLab](https://gitlab.mma.club.uec.ac.jp/mizdra/hello_world_wasm)
+
+:::
+
 ## WebAssembly を試す
 
 それでは WebAssembly の動作を理解するため, WebAssembly の入門から始めましょう! 引数として受け取った 2 つの数値の和を返す単純な関数 `add` を Rust で実装して, WebAssembly にコンパイルして JavaScript から呼び出してみます. まずは Rust のインストールを行います.
@@ -90,7 +98,7 @@ $ cargo build --target=wasm32-unknown-unknown --release
 </html>
 ```
 
-ここで起こっていることを順に追っていきます.
+ここで起こっていることを順に説明します.
 
 1.  [Fetch API](https://developer.mozilla.org/ja/docs/Web/API/Fetch_API/Using_Fetch) を用いて wasm ファイルを読み込む
 2.  `response.arrayBuffer` でファイルのデータをバイナリ配列に変換
@@ -103,7 +111,9 @@ $ cargo build --target=wasm32-unknown-unknown --release
 <!-- prettier-ignore -->
 [^9]: `file:///path/to/file.ext` のようにローカルにあるファイルにアクセスするときに使う URI スキーマです.
 
-もしかしたらこの説明に疑問を持った方がいるかもしれません. 何故なら先程 Rust コンパイラを用いて Rust から WebAssembly にコンパイルしたにも関わらず, JavaScript 上で再度コンパイルをしているからです. これは WebAssembly があくまでブラウザ[^8]が理解できるフォーマットであり, そのままではそのブラウザが動いている OS やハードウェアなどのシステムが理解できるフォーマットではないためです. WebAssembly を実行するには最初にブラウザが WebAssembly をそのブラウザが動いている OS やハードウェアが理解できる機械語にコンパイルし, それから実行する必要があります. ブラウザと WebAssembly は, ちょうど Java でいうところの JVM とバイトコードの関係のようなものです.
+:::tip
+もしかしたらこの説明に疑問を持った方がいるかもしれません. 何故なら先程 Rust コンパイラを用いて Rust から WebAssembly にコンパイルしたにも関わらず, JavaScript 上で再度コンパイルをしているからです. これは WebAssembly があくまでブラウザ[^8]が理解できるフォーマットであり, そのままではそのブラウザが動いている OS やハードウェアなどのシステムが理解できるフォーマットではないためです. WebAssembly を実行するには最初にブラウザが WebAssembly をそのブラウザが動いている OS やハードウェアが理解できる機械語にコンパイルし, それから実行する必要があります. ブラウザと WebAssembly は, ちょうど Java でいうところの JVM とバイトコードの関係のようなものなのです.
+:::
 
 さて, このコードを実際にブラウザで動かしてみます. 注意点として Fetch API は `file` URI Scheme[^9]をサポートしていないため, 任意の HTTP サーバで `index.html` と `hello_world_wasm.wasm` を配信してファイルに `http` URI Scheme でアクセスできるようにする必要があります. ここでは npm パッケージの http-server を使用します.
 
@@ -234,7 +244,7 @@ fetch(wasm)
 ```
 
 <!-- prettier-ignore -->
-[^13]: この現象は WebAssembly を `wast` 形式と呼ばれる S 式ベースのテキスト表現へと変換すると確認できます. WebAssembly の仕様に `u32` 型が存在するのにも関わらず, このように敢えて `i32` 型へと変換する理由が書いてある文献を探してみましたが, 見つけられませんでした. 何か情報をお持ちの方がいれば教えてください...
+[^13]: WebAssembly の仕様に `u32` 型が存在するのにも関わらず, このように敢えて `i32` 型へと変換する理由が書いてある文献を探してみましたが, 見つけられませんでした. 何か情報をお持ちの方がいれば教えてください...
 
 <!-- prettier-ignore -->
 [^14]: この挙動は [ECMAScript® 2017 Language Specification | 7.1.5 ToInt32](https://www.ecma-international.org/ecma-262/8.0/index.html#sec-toint32) に基づきます.
@@ -243,6 +253,23 @@ fetch(wasm)
 [^15]: 関数の戻り値の型として `u32` を期待しているのであれば, その戻り値の全てを `toUint32` 関数でラップしたほうが安全でしょう. 手間ですが...
 
 `toUint32` 関数は JavaScript の数値を 32bit 符号無し整数として扱うためのトリックです. `rand` 関数は Rust のコードでは `u32` 型を返すことになっていますが, WebAssembly にコンパイルすると `i32` 型を返す関数へと変換されます[^13]. 戻り値を `u32` 型で表した時に `2^31` 未満であれば JavaScript 側で得られる値に変わりはありませんが, `2^31` 以上の場合は戻り値から `2^32` を引いた値が JavaScript 側で得られる値となります[^14]. 今回は `rand` 関数の戻り値は `u32` 型で表した時に `2^31` 以上となる可能性があるため, `toUint32` 関数を使って戻り値を 32bit 符号無し整数として扱っています[^15].
+
+:::tip
+この暗黙の型変換は WebAssembly を wast 形式と呼ばれる S 式ベースのテキスト表現へと変換すると確認できます. `.wasm` を `.wast` に変換するには [Binaryen](https://github.com/WebAssembly/binaryen) が提供する `wasm-dis` コマンドを使います.
+
+```bash
+## 関数名をバイナリに残すために `release` オプションを付けずにコンパイル
+$ cargo build --target=wasm32-unknown-unknown
+
+## `.wast` の中身を関数名で検索
+$ wasm-dis ./target/wasm32-unknown-unknown/debug/hello_world_wasm.wasm | grep rand
+ (export "rand" (func $rand))
+ (func $rand (; 3 ;) (type $6) (result i32)
+
+## `$rand` の戻り値が `u32` ではなく `i32` になっていることが確認できる
+```
+
+:::
 
 それでは完成したプロジェクトをビルドし, 実行してみましょう.
 
@@ -262,9 +289,5 @@ $ npx http-server .
 * WebAssembly から JavaScript の関数を呼び出した
 * Rust のサードパーティ製ライブラリを使用した
 * `u32` 型を返す Rust の関数を WebAssembly にコンパイルすると `i32` を返す関数に変換されることを確認し, その対処法を学んだ
-
-本節で作成したプロジェクトは以下のリポジトリで公開しています.
-
-* [mizdra / hello_world_wasm · GitLab](https://gitlab.mma.club.uec.ac.jp/mizdra/hello_world_wasm)
 
 次節ではモジュールバンドラである Parcel を用いてより簡単に WebAssembly を実行できる開発環境を構築してみます.
