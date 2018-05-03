@@ -5,6 +5,9 @@ module.exports = {
     ['link', { rel: 'icon', href: `/web-assembly-icon-256px.png` }],
   ],
   themeConfig: {
+    nav: [
+      { text: 'GitHub', link: 'https://github.com/mizdra/wasm-dev-env-construction' },
+    ],
     sidebar: [
       '/',
       '/first',
