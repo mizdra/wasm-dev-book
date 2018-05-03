@@ -2,17 +2,14 @@
 
 最近 Web フロントエンド界隈で話題になっているキーワードに「WebAssembly(wasm)」があります. WebAssembly とはブラウザ上で動作することを目的とした低水準言語のことです. 事前にコンパイルされたバイナリ形式で高速に実行できるよう設計されているため, ブラウザ上で動く代表的な言語である JavaScript に比べて高速に実行できます[^1]. WebAssembly は以下を目標に定めて作成されています.
 
-[^1]:
+<!-- prettier-ignore -->
+[^1]: [WebAssembly はなぜ速いのか | POSTD](https://postd.cc/what-makes-webassembly-fast)
 
-  [WebAssembly はなぜ速いのか | POSTD](https://postd.cc/what-makes-webassembly-fast)
+<!-- prettier-ignore -->
+[^2]: [Portability - WebAssembly](http://webassembly.org/docs/portability/#assumptions-for-efficient-execution)
 
-[^2]:
-
-  [Portability - WebAssembly](http://webassembly.org/docs/portability/#assumptions-for-efficient-execution)
-
-[^3]:
-
-  [WebAssembly のコンセプト - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/Concepts)
+<!-- prettier-ignore -->
+[^3]: [WebAssembly のコンセプト - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/Concepts)
 
 > * 高速で、高効率であり、ポータブルである事 — WebAssembly のコードは 共通ハードウェア対応環境[^2] を利用して異なるプラットフォーム間でネイティブ水準の速度で実行可能です。
 > * 可読性を持ちデバッグ可能である事 — WebAssembly は低水準のアセンブリ言語ですが、人間が読めるテキストフォーマットを持ちます（その仕様策定は終わっていないものの）。このフォーマットは人の手で読み書きできて、デバッグもできます。

@@ -14,6 +14,7 @@ $ rustup update
 $ rustup target add wasm32-unknown-unknown
 ```
 
+<!-- prettier-ignore -->
 [^4]: Rust のビルドシステム, 及びパッケージマネージャ.
 
 インストールが終わったら Cargo[^4]を用いて Rust のプロジェクトを作成しましょう.
@@ -29,9 +30,8 @@ hello_world_wasm
 1 directory, 2 files
 ```
 
-[^5]:
-
-  [rfcs/1510-cdylib.md at master · rust-lang/rfcs](https://github.com/rust-lang/rfcs/blob/master/text/1510-cdylib.md)
+<!-- prettier-ignore -->
+[^5]: [rfcs/1510-cdylib.md at master · rust-lang/rfcs](https://github.com/rust-lang/rfcs/blob/master/text/1510-cdylib.md)
 
 Rust からコンパイルしたバイナリにはデフォルトで他の Rust プログラムからの利用する際に使われるメタデータなどが含まれています[^5]. これらのメタデータは WebAssembly では不要なので `crate-type` に `"cdylib"` を指定し, 削ぎ落とすようにしましょう. `/Cargo.toml` に以下を追加します.
 
@@ -58,9 +58,8 @@ Rust のプロジェクトを WebAssembly にコンパイルするには次の�
 $ cargo build --target=wasm32-unknown-unknown --release
 ```
 
-[^6]:
-
-  実のことを言うとつい最近この問題は解決されました (参考: https://github.com/rust-lang-nursery/rust-wasm/issues/1). しかしながら念には念を入れて, ここでは `release` オプションを付けています.
+<!-- prettier-ignore -->
+[^6]: 実のことを言うとつい最近この問題は解決されました (参考: [Support non-optimized builds on pure wasm backend · Issue #1 · rust-lang-nursery/rust-wasm](https://github.com/rust-lang-nursery/rust-wasm/issues/1)). しかしながら念には念を入れて, ここでは `release` オプションを付けています.
 
 `release` オプションにより最適化したバイナリを生成するよう指示しています. これは Rust の WebAssembly 向けコンパイルがまだ安定しておらず, 最適化されていないバイナリにバグが含まれる可能性があるため付けています[^6]. 時が経てば `release` オプションは不要になることでしょう.
 
@@ -94,13 +93,11 @@ $ cargo build --target=wasm32-unknown-unknown --release
 3.  `WebAssembly.instantiate` でバイナリ配列を WebAssembly コードとしてコンパイル・インスタンス化
 4.  WebAssembly インスタンスから `add` にアクセスし, 呼び出す
 
-[^8]:
+<!-- prettier-ignore -->
+[^8]: 厳密にはブラウザだけでなく Node.js や組み込みシステムなど様々な環境で動作します.
 
-  厳密にはブラウザだけでなく Node.js や組み込みシステムなど様々な環境で動作します.
-
-[^9]:
-
-  `file:///path/to/file.ext` のようにローカルにあるファイルにアクセスするときに使う URI スキーマです.
+<!-- prettier-ignore -->
+[^9]: `file:///path/to/file.ext` のようにローカルにあるファイルにアクセスするときに使う URI スキーマです.
 
 もしかしたらこの説明に疑問を持った方がいるかもしれません. 何故なら先程 Rust コンパイラを用いて Rust から WebAssembly にコンパイルしたにも関わらず, JavaScript 上で再度コンパイルをしているからです. これは WebAssembly があくまでブラウザ[^8]が理解できるフォーマットであり, そのままではそのブラウザが動いている OS やハードウェアなどのシステムが理解できるフォーマットではないためです. WebAssembly を実行するには最初にブラウザが WebAssembly をそのブラウザが動いている OS やハードウェアが理解できる機械語にコンパイルし, それから実行する必要があります. ブラウザと WebAssembly は, ちょうど Java でいうところの JVM とバイトコードの関係のようなものです.
 
@@ -162,6 +159,7 @@ pub fn get_timestamp() -> f64 {
 }
 ```
 
+<!-- prettier-ignore -->
 [^10]: `u64` とするとランタイムエラーが出ます.
 
 `extern` ブロックの中には Rust のコンパイラが他言語の関数を理解できるよう, 他言語の関数のシグネチャを書きます. `Date.now` 関数によって返される値は常に整数ですが, JavaScript の数値は全て IEE754 浮動小数点数なので `date_now` 関数の戻り値の型を `f64` としています[^10]. また Rust ではデフォルトで他言語関数の呼び出しはアンセーフとみなされるので, 関数を呼び出す際は `unsafe` ブロックで囲って関数が安全であることをコンパイラに約束する必要があります.
@@ -205,9 +203,8 @@ pub fn rand() -> u32 {
 }
 ```
 
-[^11]:
-
-  著者がポケモンの乱数調整に関するツール製作を趣味でやっているため, 乱数生成ライブラリを例に挙げました :P (参考: https://mizdra.hatenablog.com/entry/2016/12/01/235954)
+<!-- prettier-ignore -->
+[^11]: 著者がポケモンの乱数調整に関するツール製作を趣味でやっているため, 乱数生成ライブラリを例に挙げました. :P (参考: [乱数調整 入門 - mizdra's blog](https://mizdra.hatenablog.com/entry/2016/12/01/235954))
 
 `extern crate` で `tinymt` クレートを利用することを Rust コンパイラに伝えています. `rand` 関数では `tinymt` クレートを利用して TinyMT という乱数生成方式で乱数を生成し, 得られた乱数を返しています[^11].
 
@@ -232,17 +229,14 @@ fetch(wasm)
   });
 ```
 
-[^13]:
+<!-- prettier-ignore -->
+[^13]: この現象は WebAssembly を `wast` 形式と呼ばれる S 式ベースのテキスト表現へと変換すると確認できます. WebAssembly の仕様に `u32` 型が存在するのにも関わらず, このように敢えて `i32` 型へと変換する理由が書いてある文献を探してみましたが, 見つけられませんでした. 何か情報をお持ちの方がいれば教えてください...
 
-  この現象は WebAssembly を `wast` 形式と呼ばれる S 式ベースのテキスト表現へと変換すると確認できます. WebAssembly の仕様に `u32` 型が存在するのにも関わらず, このように敢えて `i32` 型へと変換する理由が書いてある文献を探してみましたが, 見つけられませんでした. 何か情報をお持ちの方がいれば教えてください...
+<!-- prettier-ignore -->
+[^14]: この挙動は [ECMAScript® 2017 Language Specification | 7.1.5 ToInt32](https://www.ecma-international.org/ecma-262/8.0/index.html#sec-toint32) に基づきます.
 
-[^14]:
-
-  この挙動は https://www.ecma-international.org/ecma-262/8.0/index.html#sec-toint32 に基づきます.
-
-[^15]:
-
-  関数の戻り値の型として `u32` を期待しているのであれば, その戻り値の全てを `toUint32` 関数でラップしたほうが安全でしょう. 手間ですが...
+<!-- prettier-ignore -->
+[^15]: 関数の戻り値の型として `u32` を期待しているのであれば, その戻り値の全てを `toUint32` 関数でラップしたほうが安全でしょう. 手間ですが...
 
 `toUint32` 関数は JavaScript の数値を 32bit 符号無し整数として扱うためのトリックです. `rand` 関数は Rust のコードでは `u32` 型を返すことになっていますが, WebAssembly にコンパイルすると `i32` 型を返す関数へと変換されます[^13]. 戻り値を `u32` 型で表した時に `2^31` 未満であれば JavaScript 側で得られる値に変わりはありませんが, `2^31` 以上の場合は戻り値から `2^32` を引いた値が JavaScript 側で得られる値となります[^14]. 今回は `rand` 関数の戻り値は `u32` 型で表した時に `2^31` 以上となる可能性があるため, `toUint32` 関数を使って戻り値を 32bit 符号無し整数として扱っています[^15].
 
@@ -267,7 +261,6 @@ $ npx http-server .
 
 本節で作成したプロジェクトは以下のリポジトリで公開しています.
 
-* mizdra / hello_world_wasm · GitLab
-  * https://gitlab.mma.club.uec.ac.jp/mizdra/hello_world_wasm
+* [mizdra / hello_world_wasm · GitLab](https://gitlab.mma.club.uec.ac.jp/mizdra/hello_world_wasm)
 
 次節ではモジュールバンドラである Parcel を用いてより簡単に WebAssembly を実行できる開発環境を構築してみます.
