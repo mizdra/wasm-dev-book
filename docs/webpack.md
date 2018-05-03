@@ -2,13 +2,11 @@
 
 Webpack は Web フロントエンドのための拡張性の高い, 高機能なモジュールバンドラです. 現在 Web フロントエンドで使われているモジュールバンドラの中で, 最もユーザの多いのがこの Webpack です.
 
-[^19]:
+<!-- prettier-ignore -->
+[^19]: [webpack 4: released today!! – webpack – Medium](https://medium.com/webpack/webpack-4-released-today-6cdb994702d4)
 
-  webpack 4: released today!! – webpack – Medium: https://medium.com/webpack/webpack-4-released-today-6cdb994702d4
-
-[^20]:
-
-  wasm-bindgen/README.md at 0.1.0 · alexcrichton/wasm-bindgen: https://github.com/alexcrichton/wasm-bindgen/blob/0.1.0/README.md#basic-usage
+<!-- prettier-ignore -->
+[^20]: [wasm-bindgen/README.md at 0.1.0 · alexcrichton/wasm-bindgen](https://github.com/alexcrichton/wasm-bindgen/blob/0.1.0/README.md#basic-usage)
 
 2018 年 2 月末にリリースされた Webpack v4.0.0 にて, WebAssembly のサポートが入りました[^19]. これに合わせて wasm-bindgen も Webpack v4.x.x に対応し, Webpack を使って高機能な WebAssembly 開発環境を構築することができるようになりました. 試してみましょう!
 
@@ -62,9 +60,8 @@ module.exports = {
 };
 ```
 
-[^21]:
-
-  当たり前ですがブラウザで直接 JavaScript ファイルを開いても実行されません. JavaScript を実行するには `<script>` タグで JavaScript を埋め込んだ HTML を開く必要があります.
+<!-- prettier-ignore -->
+[^21]: 当たり前ですがブラウザで直接 JavaScript ファイルを開いても実行されません. JavaScript を実行するには `<script>` タグで JavaScript を埋め込んだ HTML を開く必要があります.
 
 wasm-bindgen-cli が生成する JavaScript のラッパーは WebAssembly を拡張子を付けずに import しているので `resolve.extensions` に `.wasm` を追加する必要があります. また, html-webpack-plugin を用いて Webpack でバンドルされた JavaScript を `<script>` タグで埋め込んだ HTML を出力するようにしています. この HTML をブラウザで開くことで Webpack でバンドルされた JavaScript が実行できるようになります[^21].
 
@@ -117,14 +114,14 @@ import("./webpack_wasm_skeleton").then(module => {
 });
 ```
 
+<!-- prettier-ignore -->
 [^22]: ES Modules による import のこと.
-[^23]:
 
-  Synchronously importing wasm modules in the main chunk · Issue #6615 · webpack/webpack: https://github.com/webpack/webpack/issues/6615
+<!-- prettier-ignore -->
+[^23]: [Synchronously importing wasm modules in the main chunk · Issue #6615 · webpack/webpack](https://github.com/webpack/webpack/issues/6615)
 
-[^24]:
-
-  dynamic import は ECMAScript の正式な仕様ではなく, 現在 Stage 3 の Proposal です (参考: https://github.com/tc39/proposal-dynamic-import).
+<!-- prettier-ignore -->
+[^24]: dynamic import は ECMAScript の正式な仕様ではなく, 現在 Stage 3 の Proposal です (参考: [tc39/proposal-dynamic-import: import() proposal for JavaScript](https://github.com/tc39/proposal-dynamic-import)).
 
 今のところ Webpack では WebAssembly の synchronously import[^22]がサポートされていない[^23]ので, ここでは dynamic import を使っています[^24].
 
@@ -136,9 +133,8 @@ $ npm run dev
 i 「wdm」: Compiled successfully.
 ```
 
-[^26]:
-
-  Unable to import WebAssembly modules bigger than 4KB · Issue #6475 · webpack/webpack: https://github.com/webpack/webpack/issues/6475
+<!-- prettier-ignore -->
+[^26]: [Unable to import WebAssembly modules bigger than 4KB · Issue #6475 · webpack/webpack](https://github.com/webpack/webpack/issues/6475)
 
 ブラウザのコンソールに `3` が出力されていれば成功です. ただ, もしかするとブラウザのコンソールに次のエラーが出ている人がいるかもしれません.
 
@@ -187,9 +183,8 @@ import("./webpack_wasm_skeleton").then(module => {
 });
 ```
 
-[^27]:
-
-  バインディングされるアイテムを静的に解析することが容易という理由で「宣言的」と表現しています.
+<!-- prettier-ignore -->
+[^27]: バインディングされるアイテムを静的に解析することが容易という理由で「宣言的」と表現しています.
 
 ここでのポイントは `extern` ブロックを `#[wasm_bindgen(module = "./index")]` で修飾していることです. こうすると wasm-bindgen は `/src/index.js` で export されているアイテムを `extern` ブロックで定義されるアイテムへとバインディングします. やっていることは 2 節のものと同じですが, こちらの手法の方がより宣言的でモジュール指向です[^27]. JavaScript 側では ES Modules の `export` キーワードを用いて Rust 側からアイテムが参照できるようにしています. また, wasm-bindgen が JavaScript の関数を呼び出している箇所を自動で `unsafe` で囲ってくれるので `unsafe` ブロックを使用していないことにも注意して下さい.
 
@@ -331,5 +326,4 @@ import("./webpack_wasm_skeleton").then(module => {
 
 本節で作成したプロジェクトは以下のリポジトリで公開しています.
 
-* mizdra / webpack-wasm-skeleton · GitLab
-  * https://gitlab.mma.club.uec.ac.jp/mizdra/webpack-wasm-skeleton
+* [mizdra / webpack-wasm-skeleton · GitLab](https://gitlab.mma.club.uec.ac.jp/mizdra/webpack-wasm-skeleton)
