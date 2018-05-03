@@ -1,6 +1,8 @@
 # WebAssembly 入門
 
-それでは WebAssembly の入門から始めましょう! まずは WebAssembly の動作を理解しやすいよう, 引数として受け取った 2 つの数値の和を返す単純な関数 `add` を Rust で実装して, WebAssembly にコンパイルして JavaScript から呼び出してみます. まずは Rust のインストールを行います.
+## 最小構成で動かす
+
+それでは WebAssembly の動作を理解するため, WebAssembly の入門から始めましょう! 引数として受け取った 2 つの数値の和を返す単純な関数 `add` を Rust で実装して, WebAssembly にコンパイルして JavaScript から呼び出してみます. まずは Rust のインストールを行います.
 
 ```bash
 ## Rustをインストール (cargo, rustc, rustupコマンドなどがインストールされる)
