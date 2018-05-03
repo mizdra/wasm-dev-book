@@ -31,7 +31,7 @@ hello_world_wasm
 
 [^5]:
 
-  rfcs/1510-cdylib.md at master · rust-lang/rfcs: https://github.com/rust-lang/rfcs/blob/master/text/1510-cdylib.md
+  [rfcs/1510-cdylib.md at master · rust-lang/rfcs](https://github.com/rust-lang/rfcs/blob/master/text/1510-cdylib.md)
 
 Rust からコンパイルしたバイナリにはデフォルトで他の Rust プログラムからの利用する際に使われるメタデータなどが含まれています[^5]. これらのメタデータは WebAssembly では不要なので `crate-type` に `"cdylib"` を指定し, 削ぎ落とすようにしましょう. `/Cargo.toml` に以下を追加します.
 
