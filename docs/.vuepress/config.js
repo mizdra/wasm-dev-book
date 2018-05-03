@@ -4,8 +4,8 @@ module.exports = {
   themeConfig: {
     sidebar: [
       '/',
-      '/first/',
-      '/hello-wasm/',
+      '/first',
+      '/hello-wasm',
     ]
   }
 }
