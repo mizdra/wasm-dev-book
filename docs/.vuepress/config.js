@@ -14,6 +14,9 @@ module.exports = {
       '/hello-wasm',
       '/parcel',
       '/webpack',
+      '/typescript',
+      '/npm-package',
+      '/webassembly-studio',
     ],
   },
   markdown: {
