@@ -1,9 +1,9 @@
 {
-  "name": "wasm-dev-env-construction",
+  "name": "wasm-dev-book",
   "version": "0.0.0",
-  "description": "WebAssembly開発環境構築の解説書.",
+  "description": "WebAssembly 開発環境構築の解説書.",
   "main": "index.js",
-  "repository": "https://github.com/mizdra/wasm-dev-env-construction",
+  "repository": "https://github.com/mizdra/wasm-dev-book",
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
   "private": true,

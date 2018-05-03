@@ -1,4 +1,4 @@
-# [WIP] WebAssembly 開発環境構築
+# [WIP] WebAssembly 開発環境構築の本
 
 <div style="text-align: center;">
 
