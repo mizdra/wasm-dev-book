@@ -12,9 +12,11 @@
 
 * WebAssembly や JavaScript の仕様変更の追従が目的ではない
   * 本書は著者が[大学のサークルで発行した部誌の記事](https://wiki.mma.club.uec.ac.jp/Booklet#A2018.2BXnQ_.2BZiVT9w-)を Web 向けに編集・加筆したものであり, 最新の情報を Web で提供することが目的ではない
-* Rust の全ての文法や機能の解説が目的ではない
-  * WebAssembly の開発環境を構築する上で抑えておく必要がある点を中心に解説する
-* モダンな JavaScript の文法や機能, エコシステムの解説が目的ではない
+* WebAssembly/Rust/JavaScript の文法や機能の解説が目的ではない
+  * WebAssembly の仕様の解説が目的ではない
+  * Rust からコンパイルして生成された WebAssembly を JavaScript から利用する方法を解説する
+  * 文法や機能については, WebAssembly の開発環境を構築する上で抑えておく必要がある点を中心に解説する
+* JavaScript のエコシステムの解説が目的ではない
   * パッケージマネージャ, モジュールバンドラ, TypeScript などの解説は目的ではない
 
 ## 本書の目的
