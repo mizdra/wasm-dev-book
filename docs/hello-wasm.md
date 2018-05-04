@@ -68,11 +68,10 @@ Rust のプロジェクトを WebAssembly にコンパイルするには次の�
 $ cargo build --target=wasm32-unknown-unknown --release
 ```
 
-<!-- prettier-ignore -->
-[^6]: 実のことを言うとつい最近この問題は解決されました (参考: [Support non-optimized builds on pure wasm backend · Issue #1 · rust-lang-nursery/rust-wasm](https://github.com/rust-lang-nursery/rust-wasm/issues/1)). しかしながら念には念を入れて, ここでは `release` オプションを付けています.
-
 :::tip
-`release` オプションにより最適化したバイナリを生成するよう指示しています. これは Rust の WebAssembly 向けコンパイルがまだ安定しておらず, 最適化されていないバイナリにバグが含まれる可能性があるため付けています[^6]. 時が経てば `release` オプションは不要になることでしょう.
+
+`release` オプションにより最適化したバイナリを生成するよう指示しています. このオプションを付けずにデバッグ向けコンパイルをしても良いですが, 説明の都合上オプションを付けています.
+
 :::
 
 コンパイルが成功すれば `/target/wasm32-unknown-unknown/release/hello_world_wasm.wasm` が生成されているはずです. 早速これを JavaScript から実行してみましょう. `/index.html` を作成します.

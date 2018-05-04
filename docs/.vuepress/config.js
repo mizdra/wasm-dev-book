@@ -15,6 +15,7 @@ module.exports = {
       '/parcel',
       '/webpack',
       '/typescript',
+      '/minify-binary',
       '/npm-package',
       '/webassembly-studio',
     ],
