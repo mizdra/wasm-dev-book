@@ -245,7 +245,7 @@ fetch(wasm)
 ```
 
 <!-- prettier-ignore -->
-[^13]: WebAssembly の仕様に `u32` 型が存在するのにも関わらず, このように敢えて `i32` 型へと変換する理由が書いてある文献を探してみましたが, 見つけられませんでした. 何か情報をお持ちの方がいれば教えてください...
+[^13]: [WebAssembly の仕様に `u32` 型が存在する](https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype)にも関わらず, このように敢えて `i32` 型へと変換する理由が書いてある文献を探してみましたが, 見つけられませんでした. 何か情報をお持ちの方がいれば教えてください...
 
 <!-- prettier-ignore -->
 [^14]: この挙動は [ECMAScript® 2017 Language Specification | 7.1.5 ToInt32](https://www.ecma-international.org/ecma-262/8.0/index.html#sec-toint32) に基づきます.
@@ -269,6 +269,19 @@ $ wasm-dis ./target/wasm32-unknown-unknown/debug/wasm_dev_book_hello_wasm.wasm |
 
 ## `$rand` の戻り値が `u32` ではなく `i32` になっていることが確認できる
 ```
+
+:::
+
+:::danger
+
+この現象は `u32` だけでなく `u𝟨𝟦` についても同様に発生します.
+
+| 元の型 | 暗黙の型変換を適用した後の型 |
+| :---: | :---------------------: |
+| `i32` | `i32`                   |
+| `u32` | **`i32`**               |
+| `i64` | `i64`                   |
+| `u64` | **`i64`**               |
 
 :::
 
@@ -304,3 +317,4 @@ $ npx http-server .
 * [WebAssembly コードのロードと実行 - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/Loading_and_running)
 * [アトリビュート - プログラミング言語 Rust](https://rust-lang-ja.github.io/the-rust-programming-language-ja/1.6/book/attributes.html)
 * [クレートとモジュール - プログラミング言語 Rust](https://rust-lang-ja.github.io/the-rust-programming-language-ja/1.6/book/crates-and-modules.html)
+* [Value Types - Types — WebAssembly 1.0](https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype)
