@@ -10,6 +10,7 @@ module.exports = {
     ],
     sidebar: [
       '/',
+      '/donate',
       '/first',
       '/hello-wasm',
       '/parcel',
