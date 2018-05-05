@@ -1,6 +1,6 @@
 # はじめに
 
-最近 Web フロントエンド界隈で話題になっているキーワードに「WebAssembly(wasm)」があります. WebAssembly とはブラウザ上で動作することを目的とした低水準言語のことです. 事前にコンパイルされたバイナリ形式で高速に実行できるよう設計されているため, ブラウザ上で動く代表的な言語である JavaScript に比べて高速に実行できます[^1]. WebAssembly は以下を目標に定めて作成されています.
+最近 Web フロントエンド界隈で話題になっているキーワードに「[WebAssembly(wasm)](http://webassembly.org)」があります. WebAssembly とはブラウザ上で動作することを目的とした低水準言語のことです. 事前にコンパイルされたバイナリ形式で高速に実行できるよう設計されているため, ブラウザ上で動く代表的な言語である JavaScript に比べて高速に実行できます[^1]. WebAssembly は以下を目標に定めて作成されています.
 
 <!-- prettier-ignore -->
 [^1]: [WebAssembly はなぜ速いのか | POSTD](https://postd.cc/what-makes-webassembly-fast)
@@ -8,15 +8,12 @@
 <!-- prettier-ignore -->
 [^2]: [Portability - WebAssembly](http://webassembly.org/docs/portability/#assumptions-for-efficient-execution)
 
-<!-- prettier-ignore -->
-[^3]: [WebAssembly のコンセプト - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/Concepts)
-
 > * 高速で、高効率であり、ポータブルである事 — WebAssembly のコードは 共通ハードウェア対応環境[^2] を利用して異なるプラットフォーム間でネイティブ水準の速度で実行可能です。
 > * 可読性を持ちデバッグ可能である事 — WebAssembly は低水準のアセンブリ言語ですが、人間が読めるテキストフォーマットを持ちます（その仕様策定は終わっていないものの）。このフォーマットは人の手で読み書きできて、デバッグもできます。
 > * 安全である事 — WebAssembly は安全でサンドボックス化された実行環境上で動作するように設計されています。他のウェブ言語と同様に、ブラウザに対して same-origin および権限ポリシーの確認を強制します。
 > * ウェブを破壊しない事 — WebAssembly は他のウェブ技術と協調し、後方互換性を維持するように設計されます。
 >
-> [^3]より引用
+> [WebAssembly のコンセプト - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/Concepts) より引用
 
 現状 C/C++や Rust などの言語から WebAssembly へのコンパイルがサポートされています. 本文章では Rust を用いて WebAssembly の環境構築を行う方法を紹介します.
 

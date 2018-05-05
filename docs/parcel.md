@@ -11,9 +11,9 @@
 ## Parcel を試す
 
 <!-- prettier-ignore -->
-[^16]: [Parcel v1.5.0 released: Source Maps, WebAssembly, Rust, and more!](https://medium.com/@devongovett/parcel-v1-5-0-released-source-maps-webassembly-rust-and-more-3a6385e43b95)
+[^16]: [📦 Parcel v1.5.0 released: Source Maps, WebAssembly, Rust, and more! 🚀](https://medium.com/@devongovett/parcel-v1-5-0-released-source-maps-webassembly-rust-and-more-3a6385e43b95)
 
-Parcel は Web フロントエンドのための高速でゼロコンフィグレーション(設定ファイルが不要)なモジュールバンドラです.
+[Parcel](https://parceljs.org) は Web フロントエンドのための高速でゼロコンフィグレーション(設定ファイルが不要)なモジュールバンドラです.
 
 2018 年 1 月末にリリースされた Parcel v1.5.0 では WebAssembly と Rust がサポートされました[^16]. これにより, WebAssembly 開発環境を Parcel を用いてゼロコンフィグレーションで構築することができるようになりました. 早速試してみましょう.
 
@@ -218,7 +218,7 @@ console.log(sum(new Int32Array([1, 2, 3, 4, 5]))) // `0` と出力される
 ```
 <!-- prettier-ignore-end -->
 
-なんと `15` ではなく `0` と出力されてしまいました. これは WebAssembly が引数や戻り値として `i32`, `u32`, `f32`, `i64`, `u64`, `f64` などの基本的な数値型以外をサポートしていないことに起因しています. 現状では, 配列や文字列といった数値型以外を扱いたい場合は JavaScript, WebAssembly 双方からアクセス可能なメモリ `WebAssembly.Memory` を利用する必要があります. JavaScript からメモリに配列を配置し, WebAssembly がメモリ上のバイト列をスライスとして読み込む... といったようにすれば先程の関数は動作しますが, 少々面倒です. よくよく考えてみるとメモリに配置したデータはいつ解放するのか, どのデータをメモリ上のどの位置に配置するのか, などなど色々なことを意識しなければならないことが分かります. 文字列や配列くらいメモリを意識せずにやり取りする方法は無いのでしょうか.
+なんと `15` ではなく `0` と出力されてしまいました. これは WebAssembly が引数や戻り値として `i32`, `u32`, `f32`, `i64`, `u64`, `f64` などの基本的な数値型以外をサポートしていないことに起因しています. 現状では, 配列や文字列といった数値型以外を扱いたい場合は [JavaScript, WebAssembly 双方からアクセス可能なメモリ `WebAssembly.Memory`](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_objects/WebAssembly/Memory) を利用する必要があります. JavaScript からメモリに配列を配置し, WebAssembly がメモリ上のバイト列をスライスとして読み込む... といったようにすれば先程の関数は動作しますが, 少々面倒です. よくよく考えてみるとメモリに配置したデータはいつ解放するのか, どのデータをメモリ上のどの位置に配置するのか, などなど色々なことを意識しなければならないことが分かります. 文字列や配列くらいメモリを意識せずにやり取りする方法は無いのでしょうか.
 
 <!-- prettier-ignore -->
 [^18]: [Use Rust WASM bindgen · Issue #775 · parcel-bundler/parcel](https://github.com/parcel-bundler/parcel/issues/775)
@@ -234,3 +234,8 @@ console.log(sum(new Int32Array([1, 2, 3, 4, 5]))) // `0` と出力される
 * Parcel では解決できない問題があることを学んだ
 
 次節では Webpack という別のモジュールバンドラを用いて wasm-bindgen を利用した開発環境を構築してみます.
+
+## 参考文献
+
+* [📦 Parcel v1.5.0 released: Source Maps, WebAssembly, Rust, and more! 🚀](https://medium.com/@devongovett/parcel-v1-5-0-released-source-maps-webassembly-rust-and-more-3a6385e43b95)
+* [WebAssembly メモリ - WebAssembly テキストフォーマットを理解する - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/Understanding_the_text_format#WebAssembly_%E3%83%A1%E3%83%A2%E3%83%AA)

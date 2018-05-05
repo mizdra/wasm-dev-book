@@ -13,7 +13,7 @@
 Webpack は Web フロントエンドのための拡張性の高い, 高機能なモジュールバンドラです.
 
 <!-- prettier-ignore -->
-[^19]: [webpack 4: released today!! – webpack – Medium](https://medium.com/webpack/webpack-4-released-today-6cdb994702d4)
+[^19]: [🎼webpack 4: released today!!✨ – webpack – Medium](https://medium.com/webpack/webpack-4-released-today-6cdb994702d4)
 
 <!-- prettier-ignore -->
 [^20]: [wasm-bindgen/README.md at 0.1.0 · rustwasm/wasm-bindgen](https://github.com/rustwasm/wasm-bindgen/blob/0.1.0/README.md#basic-usage)
@@ -430,3 +430,8 @@ wasm-bindgen では関数や配列, 文字列以外にもクラスやクロー�
 * Webpack と wasm-bindgen を使って Rust のサードパーティ製ライブラリを利用した
 * Webpack と wasm-bindgen を使ってコレクションや文字列をやり取りする方法を学んだ
 * `"Hello, World!"` を出力して本当の WebAssembly 入門を終えた
+
+## 参考文献
+* [🎼webpack 4: released today!!✨ – webpack – Medium](https://medium.com/webpack/webpack-4-released-today-6cdb994702d4)
+* [rustwasm/wasm-bindgen: Interoperating JS and Rust code](https://github.com/rustwasm/wasm-bindgen)
+* [Value Types - Types — WebAssembly 1.0](https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype)

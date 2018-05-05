@@ -27,7 +27,7 @@ $ rustup target add wasm32-unknown-unknown
 <!-- prettier-ignore -->
 [^4]: Rust のビルドシステム, 及びパッケージマネージャ.
 
-インストールが終わったら [Cargo](https://rust-lang-ja.github.io/the-rust-programming-language-ja/1.6/book/getting-started.html#hello-cargo)[^4]を用いて Rust のプロジェクトを作成しましょう.
+インストールが終わったら [Cargo](https://doc.rust-lang.org/cargo/guide)[^4]を用いて Rust のプロジェクトを作成しましょう.
 
 ```bash
 $ cargo new --lib wasm-dev-book-hello-wasm
@@ -114,7 +114,7 @@ $ cargo build --target=wasm32-unknown-unknown --release
 もしかしたらこの説明に疑問を持った方がいるかもしれません. 何故なら先程 Rust コンパイラを用いて Rust から WebAssembly にコンパイルしたにも関わらず, JavaScript 上で再度コンパイルをしているからです. これは WebAssembly があくまでブラウザ[^8]が理解できるフォーマットであり, そのままではそのブラウザが動いている OS やハードウェアなどのシステムが理解できるフォーマットではないためです. WebAssembly を実行するには最初にブラウザが WebAssembly をそのブラウザが動いている OS やハードウェアが理解できる機械語にコンパイルし, それから実行する必要があります. ブラウザと WebAssembly は, ちょうど Java でいうところの JVM とバイトコードの関係のようなものなのです.
 :::
 
-さて, このコードを実際にブラウザで動かしてみます. 注意点として Fetch API は `file` URI Scheme[^9]をサポートしていないため, 任意の HTTP サーバで `index.html` と `wasm_dev_book_hello_wasm.wasm` を配信してファイルに `http` URI Scheme でアクセスできるようにする必要があります. ここでは npm パッケージの http-server を使用します.
+さて, このコードを実際にブラウザで動かしてみます. 注意点として Fetch API は `file` URI Scheme[^9]をサポートしていないため, 任意の HTTP サーバで `index.html` と `wasm_dev_book_hello_wasm.wasm` を配信してファイルに `http` URI Scheme でアクセスできるようにする必要があります. ここでは npm パッケージの [http-server](https://github.com/indexzero/http-server) を使用します.
 
 ```bash
 ## `npx` はnpmにバンドルされているコマンドです
@@ -292,3 +292,15 @@ $ npx http-server .
 * `u32` 型を返す Rust の関数を WebAssembly にコンパイルすると `i32` を返す関数に変換されることを確認し, その対処法を学んだ
 
 次節ではモジュールバンドラである Parcel を用いてより簡単に WebAssembly を実行できる開発環境を構築してみます.
+
+## 参考文献
+
+* [Setup - Wasm target - Hello, Rust!](https://www.hellorust.com/setup/wasm-target)
+* [Rust で WebAssembly を出力する](http://nmi.jp/2018-03-19-WebAssembly-with-Rust)
+* [rustup.rs - The Rust toolchain installer](https://rustup.rs)
+* [はじめる - プログラミング言語 Rust](https://rust-lang-ja.github.io/the-rust-programming-language-ja/1.6/book/getting-started.html)
+* [WebAssembly の基礎](http://nmi.jp/2017-11-06-WebAssembly-Basics)
+* [WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly)
+* [WebAssembly コードのロードと実行 - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/Loading_and_running)
+* [アトリビュート - プログラミング言語 Rust](https://rust-lang-ja.github.io/the-rust-programming-language-ja/1.6/book/attributes.html)
+* [クレートとモジュール - プログラミング言語 Rust](https://rust-lang-ja.github.io/the-rust-programming-language-ja/1.6/book/crates-and-modules.html)
