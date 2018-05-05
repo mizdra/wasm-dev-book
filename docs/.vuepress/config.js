@@ -15,7 +15,8 @@ module.exports = {
     ['meta', { property: 'og:locale', content: 'ja_JP' }],
     ['meta', { property: 'og:site_name', content: 'WebAssembly 開発環境構築の本' }],
     ['meta', { name: 'twitter:card', content: 'summary' }],
-    ['meta', { name: 'twitter:site:id', content: '@mizdra' }],
+    ['meta', { name: 'twitter:site', content: '@mizdra' }],
+    ['meta', { name: 'twitter:creator', content: '@mizdra' }],
 
     // Other Icons
     ['meta', { name: 'msapplication-TileColor', content: '#2d88ef' }],
