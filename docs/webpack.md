@@ -41,13 +41,13 @@ $ cargo install cargo-watch
 $ cargo install wasm-bindgen-cli
 
 $ npm init -y
-$ npm install --save-dev webpack webpack-cli webpack-dev-server html-webpack-plugin
+$ npm install --save-dev webpack webpack-cli webpack-dev-server html-webpack-plugin npm-run-all
 ```
 
 `/rust-toolchain` を作成し, ビルド時に利用する Rust の toolchain のバージョンを指定します.
 
-```
-nightly-2018-05-04
+```bash
+$ echo nightly-2018-05-04 > rust-toolchain
 ```
 
 :::tip
@@ -84,7 +84,7 @@ rustc 1.27.0-nightly (e82261dfb 2018-05-03)
 
 :::
 
-`/src/lib.rs` を作成します.
+`/src/lib.rs` を次のように編集します.
 
 ```rust
 #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
@@ -105,25 +105,26 @@ wasm-bindgen は `proc_macro`, `wasm_custom_section`, `wasm_import_module` の 3
 
 次に Webpack の設定ファイル `/webpack.config.js` を作成します.
 
+<!-- prettier-ignore-start -->
 ```javascript
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   resolve: {
-    extensions: [".js", ".wasm"]
+    extensions: ['.js', '.wasm'],
   },
-  plugins: [new HtmlWebpackPlugin()]
-};
+  plugins: [new HtmlWebpackPlugin()],
+}
 ```
+<!-- prettier-ignore-end -->
 
 <!-- prettier-ignore -->
-[^21]: 当たり前ですがブラウザで直接 JavaScript ファイルを開いても実行されません. JavaScript を実行するには `<script>` タグで JavaScript を埋め込んだ HTML を開く必要があります.
 
-wasm-bindgen-cli が生成する JavaScript のラッパーは WebAssembly を拡張子を付けずに import しているので `resolve.extensions` に `.wasm` を追加する必要があります. また, html-webpack-plugin を用いて Webpack でバンドルされた JavaScript を `<script>` タグで埋め込んだ HTML を出力するようにしています. この HTML をブラウザで開くことで Webpack でバンドルされた JavaScript が実行できるようになります[^21].
+wasm-bindgen-cli が生成する JavaScript のラッパーは WebAssembly を拡張子を付けずに import しているので `resolve.extensions` に `.wasm` を追加する必要があります. また, html-webpack-plugin を用いて Webpack でバンドルされた JavaScript を `<script>` タグで埋め込んだ HTML を出力するようにしています. この HTML をブラウザで開くことで Webpack でバンドルされた JavaScript が実行できるようになります.
 
 `/Cargo.toml` を編集してプロジェクトが wasm-bindgen に依存することを Cargo に伝わるようにします.
 
-```ini
+```ini{7-10}
 [package]
 name = "wasm-dev-book-webpack"
 version = "0.1.0"
@@ -156,33 +157,44 @@ crate-type = ["cdylib"]
 ```
 <!-- prettier-ignore-end -->
 
+[Parcel の利用](/parcel.md) の節で出てきた npm-scripts と比べると随分と複雑です :weary: 本書は開発環境の構築に焦点を当てているので, 利用しているコマンド (`wasm-bindgen`, `cargo watch`, `webpack-dev-server` など) の機能やオプションの解説は行いませんが, ここではそれぞれの npm-scripts の役割について簡単に補足しておきます.
+
+| スクリプト名          | 役割                                                                                                                         |
+| :--------------: | :--------------------------------------------------------------------------------------------------------------------------- |
+| `build:wasm`     | Rust のソースコードを WebAssembly にコンパイルする.                                                                                          |
+| `postbuild:wasm` | `build:wasm` コマンドが実行された直後に, 生成された WebAssembly を元に JavaScript ラッパーを生成する.                                             |
+| `build:js`       | Webpack で JavaScript のビルド (モジュールの依存解決など) をする.                                                                            |
+| `build`          | 本番用ビルドを行う. `build:wasm`, `postbuild:wasm`, `build:js` コマンドを順番に実行する.                                                  |
+| `dev:wasm`       | プロジェクトのファイル (Rust のソースコード以外も含む) が変更されたら `build:wasm` コマンドを実行する. ただし `wasm-bindgen` コマンドで生成されるファイルは監視対象から除外する. |
+| `dev:js`         | JavaScript ファイルが更新されたら Webpack で JavaScript のビルドをする.                                                                       |
+| `dev`            | 開発用ビルドを行う. `dev:wasm`, `dev:js` コマンドを並列に実行する.                                                                        |
+
 :::warning
 
-TODO: `npm-scripts` について
+`dev:wasm` コマンドにおいて更新の監視対象から `wasm-bindgen` コマンドで生成されるファイルを除外しているのは, `dev:js` コマンドの監視対象とコンフリクトして `dev` コマンドのビルドが終わらない問題を回避するためです.
 
 :::
 
-`npm run dev` で開発用ビルド, `npm run build` で本番用ビルドです. プロジェクトをビルドすると wasm-bindgen-cli により `src` ディレクトリ配下に WebAssembly ファイル `wasm_dev_book_webpack_bg.wasm` とその JavaScript ラッパーの`wasm_dev_book_webpack.js` が生成されます. WebAssembly を利用する場合は WebAssembly を直接読み込むのではなく, この JavaScript ラッパーを読み込んでラッパー経由で WebAssembly を利用します.
+プロジェクトをビルドすると wasm-bindgen-cli により `src` ディレクトリ配下に WebAssembly ファイル `wasm_dev_book_webpack_bg.wasm` とその JavaScript ラッパーの`wasm_dev_book_webpack.js` が生成されます. WebAssembly を利用する場合は WebAssembly を直接読み込むのではなく, この JavaScript ラッパーを読み込んでラッパー経由で WebAssembly を利用します.
 
 それではラッパーを経由して WebAssembly の関数を呼び出す `/src/index.js` を作成しましょう.
 
+<!-- prettier-ignore-start -->
 ```javascript
-import("./wasm_dev_book_webpack").then(module => {
-  const { add } = module;
-  console.log(add(1, 2));
-});
+import('./wasm_dev_book_webpack').then(module => {
+  const { add } = module
+  console.log(add(1, 2))
+})
 ```
+<!-- prettier-ignore-end -->
 
 <!-- prettier-ignore -->
-[^22]: ES Modules による import のこと.
+[^23]: Webpack では将来的に Parcelと同様の WebAssembly の synchronously import (ES Modules による import のこと) がサポートされる予定です (参考: [webpack/webpack#6615](https://github.com/webpack/webpack/issues/6615)).
 
 <!-- prettier-ignore -->
-[^23]: [Synchronously importing wasm modules in the main chunk · Issue #6615 · webpack/webpack](https://github.com/webpack/webpack/issues/6615)
+[^24]: dynamic import は現在 ECMAScript の正式な仕様ではなく, Stage 3 の Proposal です.
 
-<!-- prettier-ignore -->
-[^24]: dynamic import は ECMAScript の正式な仕様ではなく, 現在 Stage 3 の Proposal です (参考: [tc39/proposal-dynamic-import: import() proposal for JavaScript](https://github.com/tc39/proposal-dynamic-import)).
-
-今のところ Webpack では WebAssembly の synchronously import[^22]がサポートされていない[^23]ので, ここでは dynamic import を使っています[^24].
+Webpack で WebAssembly を読み込むには [dynamic import](https://github.com/tc39/proposal-dynamic-import) [^24]を使います [^23]. dynamic import の `import` 関数は `Promise` を返すので, `fetch` 関数と同様に `then` メソッドで処理を囲む必要があります.
 
 準備が整ったので実行してみましょう. `npm run dev` コマンドでプロジェクトのビルドが行われ, 開発用の HTTP サーバが立ち上がります. ここで注意してほしいのですが, Cargo によるビルドが終わる前に Webpack によるビルドが実行されるのでビルドの途中でエラーが出ますが, 無視して暫く放置してみて下さい. Cargo によるビルドが完了した時に Webpack がそれを検知して再度ビルドが掛かるので無事ビルドが成功するはずです.
 
@@ -191,9 +203,6 @@ $ npm run dev
 ...
 i 「wdm」: Compiled successfully.
 ```
-
-<!-- prettier-ignore -->
-[^26]: [Unable to import WebAssembly modules bigger than 4KB · Issue #6475 · webpack/webpack](https://github.com/webpack/webpack/issues/6475)
 
 ブラウザのコンソールに `3` が出力されていれば成功です.
 
@@ -212,7 +221,9 @@ Use WebAssembly.instantiate.
     at __webpack_require__ (main.js:58)
 ```
 
-これは WebAssembly を含むプロジェクトをビルドした時に Google Chrome で実行できないコードが出力されるという Webpack のバグに起因しています[^26]. もし上記のエラーが出た場合は Google Chrome の代わりに Mozilla Firefox を使って下さい.
+これは WebAssembly を含むプロジェクトをビルドした時に Google Chrome で実行できないコードが出力されるという Webpack のバグに起因しています (参考: [webpack/webpack#6475](https://github.com/webpack/webpack/issues/6475)).
+
+もし上記のエラーが出た場合は Google Chrome の代わりに Mozilla Firefox を使って下さい.
 :::
 
 ## WebAssembly から JavaScript の関数を呼び出す
@@ -236,15 +247,17 @@ pub fn get_timestamp() -> f64 {
 
 `/src/index.js` は次のように編集します.
 
-```javascript
-export const date_now = Date.now;
+<!-- prettier-ignore-start -->
+```javascript{1,4,6}
+export const date_now = Date.now
 
-import("./wasm_dev_book_webpack").then(module => {
-  const { add, get_timestamp } = module;
-  // ...
-  console.log(get_timestamp());
-});
+import('./wasm_dev_book_webpack').then(module => {
+  const { add, get_timestamp } = module
+  console.log(add(1, 2))
+  console.log(get_timestamp())
+})
 ```
+<!-- prettier-ignore-end -->
 
 <!-- prettier-ignore -->
 [^27]: バインディングされるアイテムを静的に解析することが容易という理由で「宣言的」と表現しています.
@@ -287,24 +300,22 @@ pub fn rand() -> u32 {
 
 `/src/index.js` を `rand` 関数を呼び出すよう編集します.
 
-```javascript
-// ...
-const toUint32 = num => num >>> 0;
+<!-- prettier-ignore-start -->
+```javascript{1,6,9}
+const toUint32 = num => num >>> 0
 
-import("./wasm_dev_book_webpack").then(module => {
-  const { add, get_timestamp, rand } = module;
-  // ...
-  console.log(toUint32(rand()));
-});
+export const date_now = Date.now
+
+import('./wasm_dev_book_webpack').then(module => {
+  const { add, get_timestamp, rand } = module
+  console.log(add(1, 2))
+  console.log(get_timestamp())
+  console.log(toUint32(rand()))
+})
 ```
+<!-- prettier-ignore-end -->
 
 特に[前節](/parcel.md)でやったことと変わりはありませんね. 編集内容を保存してブラウザのコンソールを見てみましょう. 出力に `2545341989` が追加されていれば成功です!
-
-:::danger
-
-TODO: `cargo update` について
-
-:::
 
 ## コレクション, 文字列の受け渡し
 
@@ -320,14 +331,21 @@ pub fn sum(slice: &[i32]) -> i32 {
 
 そして `/src/index.js` から `sum` 関数を呼び出します.
 
-```javascript
-// ...
-import("./wasm_dev_book_webpack").then(module => {
-  const { add, get_timestamp, rand, sum } = module;
-  // ...
-  console.log(sum(new Int32Array([1, 2, 3, 4, 5])));
-});
+<!-- prettier-ignore-start -->
+```javascript{6,10}
+const toUint32 = num => num >>> 0
+
+export const date_now = Date.now
+
+import('./wasm_dev_book_webpack').then(module => {
+  const { add, get_timestamp, rand, sum } = module
+  console.log(add(1, 2))
+  console.log(get_timestamp())
+  console.log(toUint32(rand()))
+  console.log(sum(new Int32Array([1, 2, 3, 4, 5])))
+})
 ```
+<!-- prettier-ignore-end -->
 
 注意点としては Rust 側の関数の仮引数では配列型ではなくスライス型を使用し, JavaScript 側の関数呼び出しの実引数では通常の配列ではなく対応する TypedArray を使用することです.
 
@@ -343,26 +361,33 @@ pub fn twice(slice: &[i32]) -> Vec<i32> {
 
 JavaScript から呼び出す場合はこうです.
 
-```javascript
-// ...
-import("./wasm_dev_book_webpack").then(module => {
-  const { add, get_timestamp, rand, sum, twice } = module;
-  // ...
+<!-- prettier-ignore-start -->
+```javascript{6,10-11}
+const toUint32 = num => num >>> 0
+
+export const date_now = Date.now
+
+import('./wasm_dev_book_webpack').then(module => {
+  const { add, get_timestamp, rand, sum, twice } = module
+  console.log(add(1, 2))
+  console.log(get_timestamp())
+  console.log(toUint32(rand()))
   // console.log(sum(new Int32Array([1, 2, 3, 4, 5])))
-  console.log(sum(twice(new Int32Array([1, 2, 3, 4, 5]))));
-});
+  console.log(sum(twice(new Int32Array([1, 2, 3, 4, 5]))))
+})
 ```
+<!-- prettier-ignore-end -->
 
 文字列の受け渡しはどうでしょうか. 文字列をブラウザのコンソールに出力する `hello` 関数を作成してみます.
 
-```rust
+```rust{5,8-11}
 // ...
 #[wasm_bindgen(module = "./index")]
 extern {
-    // ...
+    fn date_now() -> f64;
     fn console_log(s: &str);
 }
-
+// ...
 #[wasm_bindgen]
 pub fn hello() {
     console_log("Hello, World!");
@@ -371,22 +396,29 @@ pub fn hello() {
 
 JavaScript 側ではバインディングするアイテムを export して `hello` 関数を呼び出すコードを追加するだけです.
 
-```javascript
-// ...
-export const console_log = console.log;
+<!-- prettier-ignore-start -->
+```javascript{4,7,12}
+const toUint32 = (num) => num >>> 0
 
-import("./wasm_dev_book_webpack").then(module => {
-  const { add, get_timestamp, rand, sum, twice, hello } = module;
-  // ...
-  hello();
-});
+export const date_now = Date.now
+export const console_log = console.log
+
+import('./wasm_dev_book_webpack').then(module => {
+  const { add, get_timestamp, rand, sum, twice, hello } = module
+  console.log(add(1, 2))
+  console.log(get_timestamp())
+  console.log(toUint32(rand()))
+  console.log(sum(twice(new Int32Array([1, 2, 3, 4, 5]))))
+  hello()
+})
 ```
+<!-- prettier-ignore-end -->
 
 ブラウザのコンソールを開いて出力を確認してみましょう. 正しくコードが書けていれば `30` と `Hello, World!` が出力に追加されているはずです. `"Hello, World!"` が出力できたのでこれで本当の WebAssembly 入門が終わったと言えそうですね :P
 
 :::tip
 
-TODO: その他の型の扱いについて触れる
+wasm-bindgen では関数や配列, 文字列以外にもクラスやクロージャなどをサポートしています. 詳細は [wasm-bindgen のリポジトリ](https://github.com/rustwasm/wasm-bindgen) を参照して下さい.
 
 :::
 
