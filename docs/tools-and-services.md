@@ -27,3 +27,15 @@ WebAssembly の npm package を作成するツール. wasm-bindgen で Rust か�
 [^2]: WebAssembly に コンパイルできる TypeScript のサブセット.
 
 WebAssembly のオンライン IDE です. 言語として C/C++/Wat[^1]/AssemblyScript[^2]/Rust をサポートするほか, WebAssembly のために最適化された Binary Explorer や関数呼び出しをグラフとして可視化する機能などが含まれます.
+
+## koute/cargo-web
+
+* <https://github.com/koute/cargo-web>
+
+Rust でクライアントサイド Web アプリケーションを構築するための CLI ツール群. Rust を WebAssembly にコンパイルする機能のほか, Auto Reload が有効化されたデバッグサーバの起動やデプロイ, Headless Chrome によるテストなどを行うコマンドが提供されています.
+
+## DenisKolodin/yew
+
+* <https://github.com/DenisKolodin/yew>
+
+Rust で実装された Web フロントエンド向けの View フレームワーク. Elm や Redux のような MVC アーキテクチャを採用しており, React のような JSX-like な文法で コンポーネントを記述できます. DOM の更新は独自の Virtual DOM エンジンにより最適化されます.
