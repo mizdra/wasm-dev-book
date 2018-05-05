@@ -24,4 +24,5 @@ module.exports = {
       md.use(require('markdown-it-footnote'))
     },
   },
+  ga: 'UA-44022285-7',
 }
