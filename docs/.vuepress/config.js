@@ -18,6 +18,7 @@ module.exports = {
       '/minify-binary',
       '/npm-package',
       '/webassembly-studio',
+      '/tools-and-services'
     ],
   },
   markdown: {
