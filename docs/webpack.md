@@ -434,4 +434,3 @@ wasm-bindgen では関数や配列, 文字列以外にもクラスやクロー�
 ## 参考文献
 * [🎼webpack 4: released today!!✨ – webpack – Medium](https://medium.com/webpack/webpack-4-released-today-6cdb994702d4)
 * [rustwasm/wasm-bindgen: Interoperating JS and Rust code](https://github.com/rustwasm/wasm-bindgen)
-* [Value Types - Types — WebAssembly 1.0](https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype)
