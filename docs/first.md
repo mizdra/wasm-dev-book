@@ -49,10 +49,10 @@
 
 以下は著者の開発環境です. 出来る限りこれらより高いバージョンのツール・ソフトウェアを使用するようにして下さい.
 
-* Node.js v9.9.0
-* npm v5.8.0
-* rustc 1.24.1
-* rustc 1.26.0-nightly
-* cargo 0.25.0
-* Mozilla Firefox v59.0.1
-* Google Chrome v65.0.3325.162
+* Node.js v10.0.0
+* npm v6.0.0
+* rustup 1.11.0 (e751ff9f8 2018-02-13)
+* rustc 1.25.0 (84203cac6 2018-03-25)
+* rustc 1.27.0-nightly (e82261dfb 2018-05-03)
+* Mozilla Firefox v59.0.2
+* Google Chrome v66.0.3359.117
