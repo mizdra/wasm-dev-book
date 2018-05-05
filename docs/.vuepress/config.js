@@ -3,6 +3,7 @@ module.exports = {
   description: 'WebAssembly 開発環境構築の解説書.',
   head: [
     ['link', { rel: 'icon', href: `/web-assembly-icon-256px.png` }],
+    ['link', { rel: 'shortcut icon', href: `/web-assembly-icon-256px.png` }],
     ['meta', { property: 'og:title', content: 'WebAssembly 開発環境構築の本' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:url', content: 'https://wasm-dev-book.netlify.com' }],
