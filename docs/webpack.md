@@ -4,7 +4,7 @@
 
 本節で作成するプロジェクトは以下のリポジトリで公開しています.
 
-* [mizdra / webpack-wasm-skeleton · GitLab](https://gitlab.mma.club.uec.ac.jp/mizdra/webpack-wasm-skeleton)
+* [mizdra/wasm-dev-book-webpack](https://github.com/mizdra/wasm-dev-book-webpack)
 
 :::
 
@@ -23,13 +23,20 @@ Webpack は Web フロントエンドのための拡張性の高い, 高機能�
 wasm-bindgen は Nightly 版の Rust に依存しています[^20]. 次のコマンドで Nightly 版をインストールして下さい.
 
 ```bash
-$ rustup install nightly
+$ rustup install nightly-2018-05-04
+$ rustup target add wasm32-unknown-unknown --toolchain nightly-2018-05-04
 ```
+
+:::warning
+
+`rustup install nightly` と実行すればその時点で最新の Nightly 版の Rust がインストールされますが, ここでは説明のため toolchain のバージョンを指定してインストールしています.
+
+:::
 
 プロジェクトを作成・初期化し, プロジェクトのビルドに必要なツール群をインストールします. cargo-watch は Rust ファイルを監視ビルドする際に, wasm-bindgen-cli は JavaScript のラッパーを生成する際に必要になります.
 
 ```bash
-$ cargo new --lib webpack-wasm-skeleton && cd $_
+$ cargo new --lib wasm-dev-book-webpack && cd $_
 $ cargo install cargo-watch
 $ cargo install wasm-bindgen-cli
 
@@ -37,10 +44,50 @@ $ npm init -y
 $ npm install --save-dev webpack webpack-cli webpack-dev-server html-webpack-plugin
 ```
 
+`/rust-toolchain` を作成し, ビルド時に利用する Rust の toolchain のバージョンを指定します.
+
+```
+nightly-2018-05-04
+```
+
+:::tip
+
+`rust-toolchain` ファイルはそのファイルが配置されているディレクトリ及びサブディレクトリで有効です. また, コマンドの後ろに `+nightly-2018-05-04` などのように使用したいバージョンを加えることで, `rustc` や `cargo` などのコマンドで使用する toolchain のバージョンを上書き指定できます.
+
+```bash
+## テストプロジェクトの作成
+$ mkdir /tmp/rust-toolchain-test
+$ cd /tmp/rust-toolchain-test
+$ echo nightly-2018-05-04 > rust-toolchain
+$ mkdir sub
+
+## `rust-toolchain` があるディレクトリでは `rust-toolchain` の内容が優先される
+$ rustc --version
+rustc 1.27.0-nightly (e82261dfb 2018-05-03)
+
+## サブディレクトリにおいても `rust-toolchain` の内容が優先される
+$ cd sub
+$ rustc --version
+rustc 1.27.0-nightly (e82261dfb 2018-05-03)
+
+## `rust-toolchain` がカレントディレクトリにも親ディレクトリにも無い場合は `rustup default` で指定したバージョンが優先される
+$ cd ../../
+$ rustc --version
+rustc 1.25.0 (84203cac6 2018-03-25)
+
+## コマンドの後ろに使用したいバージョンを加えると, そのバージョンが優先される
+$ rustc +nightly-2018-05-04 --version
+rustc 1.27.0-nightly (e82261dfb 2018-05-03)
+```
+
+その他の toolchain のバージョン指定方法は [rustup の README](https://github.com/rust-lang-nursery/rustup.rs/blob/master/README.md) を参照して下さい.
+
+:::
+
 `/src/lib.rs` を作成します.
 
 ```rust
-#![feature(proc_macro)]
+#![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
 extern crate wasm_bindgen;
 
@@ -52,7 +99,7 @@ pub fn add(a: i32, b: i32) -> i32 {
 }
 ```
 
-wasm-bindgen は Rust の実験的な機能である `proc_macro` を利用するので `feature` アトリビュートを付けています. `#` の後に `!` を付けることでアトリビュートをそれを囲むブロック全体に適応することを Rust コンパイラに指示します. ここでは `feature` アトリビュートはトップレベルに置かれているのでトップレベルを囲むブロック, つまり `/src/lib.rs` 全体で `proc_macro` が有効になります.
+wasm-bindgen は `proc_macro`, `wasm_custom_section`, `wasm_import_module` の 3 つの Rust の実験的な機能を利用するので `feature` アトリビュートを付けています. `#` の後に `!` を付けることでアトリビュートをそれを囲むブロック全体に適応することを Rust コンパイラに指示します. ここでは `feature` アトリビュートはトップレベルに置かれているのでトップレベルを囲むブロック, つまり `/src/lib.rs` 全体で これらの機能が有効になります.
 
 `add` 関数では `no_mangle` アトリビュートの代わりに `wasm_bindgen` アトリビュートを用いて関数を修飾しています. こうすることで WebAssembly-JavaScript 間で相互にやりとりしやすいように修飾された関数を変換します. また, 本来であれば `#[wasm_bindgen::prelude::wasm_bindgen]` と書くところを `use` キーワードを用いることで `#[wasm_bindgen]` と短く書けるようにしています.
 
@@ -78,12 +125,12 @@ wasm-bindgen-cli が生成する JavaScript のラッパーは WebAssembly を�
 
 ```ini
 [package]
-name = "webpack-wasm-skeleton"
+name = "wasm-dev-book-webpack"
 version = "0.1.0"
 authors = ["mizdra <pp.mizdra@gmail.com>"]
 
 [dependencies]
-wasm-bindgen = "0.1"
+wasm-bindgen = "0.2"
 
 [lib]
 crate-type = ["cdylib"]
@@ -91,25 +138,23 @@ crate-type = ["cdylib"]
 
 プロジェクトをビルドするために `npm-scripts` にビルドコマンドを追加しましょう. `/package.json` の `scripts` フィールドを次のように書き換えます.
 
+<!-- prettier-ignore-start -->
 ```json
 {
   // ...
   "scripts": {
-    "prebuild:wasm": "cargo +nightly check",
-    "build:wasm":
-      "cargo +nightly build --target wasm32-unknown-unknown --release",
-    "postbuild:wasm":
-      "wasm-bindgen target/wasm32-unknown-unknown/release/webpack_wasm_skeleton.wasm--out-dir src",
+    "build:wasm": "cargo build --target wasm32-unknown-unknown --release",
+    "postbuild:wasm": "wasm-bindgen target/wasm32-unknown-unknown/release/wasm_dev_book_webpack.wasm --out-dir src --no-typescript",
     "build:js": "webpack --mode production",
     "build": "run-s build:wasm build:js",
-    "dev:wasm":
-      "cargo watch -i 'src/{webpack_wasm_skeleton_bg.wasm,webpack_wasm_skeleton.js}' -s 'npm run build:wasm'",
+    "dev:wasm": "cargo watch -i 'src/{wasm_dev_book_webpack_bg.wasm,wasm_dev_book_webpack.js}' -s 'npm run build:wasm'",
     "dev:js": "webpack-dev-server --mode development",
     "dev": "run-p dev:wasm dev:js"
-  }
+  },
   // ...
 }
 ```
+<!-- prettier-ignore-end -->
 
 :::warning
 
@@ -117,12 +162,12 @@ TODO: `npm-scripts` について
 
 :::
 
-`npm run dev` で開発用ビルド, `npm run build` で本番用ビルドです. プロジェクトをビルドすると wasm-bindgen-cli により `src` ディレクトリ配下に WebAssembly ファイル `webpack_wasm_skeleton_bg.wasm` とその JavaScript ラッパーの`webpack_wasm_skeleton.js` が生成されます. WebAssembly を利用する場合は WebAssembly を直接読み込むのではなく, この JavaScript ラッパーを読み込んでラッパー経由で WebAssembly を利用します.
+`npm run dev` で開発用ビルド, `npm run build` で本番用ビルドです. プロジェクトをビルドすると wasm-bindgen-cli により `src` ディレクトリ配下に WebAssembly ファイル `wasm_dev_book_webpack_bg.wasm` とその JavaScript ラッパーの`wasm_dev_book_webpack.js` が生成されます. WebAssembly を利用する場合は WebAssembly を直接読み込むのではなく, この JavaScript ラッパーを読み込んでラッパー経由で WebAssembly を利用します.
 
 それではラッパーを経由して WebAssembly の関数を呼び出す `/src/index.js` を作成しましょう.
 
 ```javascript
-import("./webpack_wasm_skeleton").then(module => {
+import("./wasm_dev_book_webpack").then(module => {
   const { add } = module;
   console.log(add(1, 2));
 });
@@ -139,7 +184,7 @@ import("./webpack_wasm_skeleton").then(module => {
 
 今のところ Webpack では WebAssembly の synchronously import[^22]がサポートされていない[^23]ので, ここでは dynamic import を使っています[^24].
 
-準備が整ったので実行してみましょう. `npm run dev` コマンドでプロジェクトのビルドが行われ, 開発用の HTTP サーバが立ち上がります. ここで注意してほしいのですが, Cargo によるビルドが終わる前に Webpack によるビルドが実行されるのでビルドの途中でエラーが出ますが, 無視して暫く放置して下さい. Cargo によるビルドが完了した時に Webpack がそれを検知して再度ビルドが掛かるので無事ビルドが成功するはずです.
+準備が整ったので実行してみましょう. `npm run dev` コマンドでプロジェクトのビルドが行われ, 開発用の HTTP サーバが立ち上がります. ここで注意してほしいのですが, Cargo によるビルドが終わる前に Webpack によるビルドが実行されるのでビルドの途中でエラーが出ますが, 無視して暫く放置してみて下さい. Cargo によるビルドが完了した時に Webpack がそれを検知して再度ビルドが掛かるので無事ビルドが成功するはずです.
 
 ```bash
 $ npm run dev
@@ -152,18 +197,18 @@ i 「wdm」: Compiled successfully.
 
 ブラウザのコンソールに `3` が出力されていれば成功です.
 
-::: warning
+::: danger
 もしかするとブラウザのコンソールに次のエラーが出ている人がいるかもしれません.
 
 ```
 Uncaught (in promise) RangeError: WebAssembly.Instance is disallowed on the
 main thread, if the buffer size is larger than 4KB.
 Use WebAssembly.instantiate.
-    at eval (webpack_wasm_skeleton_bg.wasm:4)
-    at Object../src/webpack_wasm_skeleton_bg.wasm (0.js:22)
+    at eval (wasm_dev_book_webpack_bg.wasm:4)
+    at Object../src/wasm_dev_book_webpack_bg.wasm (0.js:22)
     at __webpack_require__ (main.js:58)
-    at eval (webpack_wasm_skeleton.js:25)
-    at Object../src/webpack_wasm_skeleton.js (0.js:11)
+    at eval (wasm_dev_book_webpack.js:25)
+    at Object../src/wasm_dev_book_webpack.js (0.js:11)
     at __webpack_require__ (main.js:58)
 ```
 
@@ -194,7 +239,7 @@ pub fn get_timestamp() -> f64 {
 ```javascript
 export const date_now = Date.now;
 
-import("./webpack_wasm_skeleton").then(module => {
+import("./wasm_dev_book_webpack").then(module => {
   const { add, get_timestamp } = module;
   // ...
   console.log(get_timestamp());
@@ -215,7 +260,7 @@ import("./webpack_wasm_skeleton").then(module => {
 ```ini
 // ...
 [dependencies]
-wasm-bindgen = "0.1"
+wasm-bindgen = "0.2"
 tinymt = { git = "https://github.com/mizdra/rust-tinymt", tag = "0.1.0" }
 // ...
 ```
@@ -246,7 +291,7 @@ pub fn rand() -> u32 {
 // ...
 const toUint32 = num => num >>> 0;
 
-import("./webpack_wasm_skeleton").then(module => {
+import("./wasm_dev_book_webpack").then(module => {
   const { add, get_timestamp, rand } = module;
   // ...
   console.log(toUint32(rand()));
@@ -254,6 +299,12 @@ import("./webpack_wasm_skeleton").then(module => {
 ```
 
 特に[前節](/parcel.md)でやったことと変わりはありませんね. 編集内容を保存してブラウザのコンソールを見てみましょう. 出力に `2545341989` が追加されていれば成功です!
+
+:::danger
+
+TODO: `cargo update` について
+
+:::
 
 ## コレクション, 文字列の受け渡し
 
@@ -271,7 +322,7 @@ pub fn sum(slice: &[i32]) -> i32 {
 
 ```javascript
 // ...
-import("./webpack_wasm_skeleton").then(module => {
+import("./wasm_dev_book_webpack").then(module => {
   const { add, get_timestamp, rand, sum } = module;
   // ...
   console.log(sum(new Int32Array([1, 2, 3, 4, 5])));
@@ -294,7 +345,7 @@ JavaScript から呼び出す場合はこうです.
 
 ```javascript
 // ...
-import("./webpack_wasm_skeleton").then(module => {
+import("./wasm_dev_book_webpack").then(module => {
   const { add, get_timestamp, rand, sum, twice } = module;
   // ...
   // console.log(sum(new Int32Array([1, 2, 3, 4, 5])))
@@ -324,7 +375,7 @@ JavaScript 側ではバインディングするアイテムを export して `he
 // ...
 export const console_log = console.log;
 
-import("./webpack_wasm_skeleton").then(module => {
+import("./wasm_dev_book_webpack").then(module => {
   const { add, get_timestamp, rand, sum, twice, hello } = module;
   // ...
   hello();

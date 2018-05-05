@@ -4,7 +4,7 @@
 
 本節で作成するプロジェクトは以下のリポジトリで公開しています.
 
-* [mizdra / parcel-wasm-skeleton · GitLab](https://gitlab.mma.club.uec.ac.jp/mizdra/parcel-wasm-skeleton)
+* [mizdra/wasm-dev-book-parcel](https://github.com/mizdra/wasm-dev-book-parcel)
 
 :::
 
@@ -20,7 +20,7 @@ Parcel は Web フロントエンドのための高速でゼロコンフィグ�
 まずプロジェクトを作成, npm プロジェクトとして初期化して Parcel をインストールします.
 
 ```bash
-$ mkdir parcel-wasm-skeleton && cd $_
+$ mkdir wasm-dev-book-parcel && cd $_
 $ npm init -y
 $ npm install --save-dev parcel
 ```
@@ -52,7 +52,7 @@ ES Modules の `import` 構文を用いて `lib.rs` を読み込もうとして�
 
 <head>
   <meta charset="UTF-8">
-  <title>parcel-wasm-skeleton</title>
+  <title>wasm-dev-book-parcel</title>
   <script src="./index.js"></script>
 </head>
 
@@ -85,7 +85,7 @@ TODO: `--no-cache`, `predev` について
 ```bash
 $ npm run dev
 
-> parcel-wasm-skeleton@1.0.0 dev /Users/mizdra/src/gomi/parcel-wasm-skeleton
+> wasm-dev-book-parcel@1.0.0 dev /Users/mizdra/src/gomi/wasm-dev-book-parcel
 > parcel src/index.html
 
 Server running at http://localhost:1234
@@ -106,7 +106,7 @@ TODO: 開発用ビルドではなく本番用ビルドを行いたい場合は `
 
 ```ini
 [package]
-name = "parcel_wasm_skeleton"
+name = "wasm-dev-book-parcel"
 version = "0.1.0"
 authors = ["mizdra <pp.mizdra@gmail.com>"]
 

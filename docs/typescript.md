@@ -8,7 +8,7 @@ TypeScript は JavaScript に静的型を導入し, 実行する前に型レベ�
 
 本節で作成するプロジェクトは以下のリポジトリで公開しています.
 
-* [mizdra/wasm-dev-book-typescript](https://github.com/mizdra/wasm-dev-book-typescript)
+* [mizdra/wasm-dev-book-webpack-typescript](https://github.com/mizdra/wasm-dev-book-webpack-typescript)
 
 :::
 
@@ -19,12 +19,12 @@ TypeScript は JavaScript に静的型を導入し, 実行する前に型レベ�
 はじめに, [Webpack の利用](/webpack.md)の節で作成したリポジトリをコピーし, プロジェクト名を変更します.
 
 ```bash
-$ cp -r wasm-dev-book-webpack wasm-dev-book-typescript
-$ cd wasm-dev-book-typescript
+$ cp -r wasm-dev-book-webpack wasm-dev-book-webpack-typescript
+$ cd wasm-dev-book-webpack-typescript
 
 ## プロジェクト名の変更 (エディタの置換機能でやっても良い)
-$ find . -type f | xargs sed -i "s/wasm-dev-book-webpack/wasm-dev-book-typescript/g"
-$ find . -type f | xargs sed -i "s/wasm_dev_book_webpack/wasm_dev_book_typescript/g"
+$ find . -type f | xargs sed -i "s/wasm-dev-book-webpack/wasm-dev-book-webpack-typescript/g"
+$ find . -type f | xargs sed -i "s/wasm_dev_book_webpack/wasm_dev_book_webpack_typescript/g"
 ```
 
 TypeScript のトランスパイルに必要な npm パッケージをインストールします.
@@ -88,15 +88,14 @@ $ mv ./src/index.js ./src/index.ts
 
 最後に wasm-bindgen コマンドで TypeScript の型定義ファイルを作成するように, ビルドスクリプトを書き換えます. ただし, そのままだと開発用ビルド時に生成された型定義ファイルに cargo-watch が反応して Rust のコンパイル処理が走ってしまうため, cargo-watch コマンドの監視対象から TypeScript の型定義ファイルを除外しておきます.
 
-```json{5,8}
+```json{4,7}
   // ...
   "scripts": {
-    "prebuild:wasm": "cargo +nightly check",
-    "build:wasm": "cargo +nightly build --target wasm32-unknown-unknown --release",
-    "postbuild:wasm": "wasm-bindgen target/wasm32-unknown-unknown/release/wasm_dev_book_typescript.wasm --out-dir src",
+    "build:wasm": "cargo build --target wasm32-unknown-unknown --release",
+    "postbuild:wasm": "wasm-bindgen target/wasm32-unknown-unknown/release/wasm_dev_book_webpack_typescript.wasm --out-dir src",
     "build:js": "webpack --mode production",
     "build": "run-s build:wasm build:js",
-    "dev:wasm": "cargo watch -i 'src/{wasm_dev_book_typescript_bg.wasm,wasm_dev_book_typescript.js,wasm_dev_book_typescript.d.ts}' -s 'npm run build:wasm'",
+    "dev:wasm": "cargo watch -i 'src/{wasm_dev_book_webpack_typescript_bg.wasm,wasm_dev_book_webpack_typescript.js,wasm_dev_book_webpack_typescript.d.ts}' -s 'npm run build:wasm'",
     "dev:js": "webpack-dev-server --mode development",
     "dev": "run-p dev:wasm dev:js"
   },
@@ -114,7 +113,7 @@ ERROR in ./src/index.ts
       TS7006: Parameter 'num' implicitly has an 'any' type.
 ```
 
-おっと, TypeScript のコンパイルエラーが出てしまいました. でも心配しないで下さい. コンパイルエラーが出ているということは正しく TypeScript の静的型検査が働いている証拠なのです! ですから落ち着いてエラーを修正することにしましょう :smile:
+おっと, TypeScript のコンパイルエラーが出てしまいました. でも心配しないで下さい. コンパイルエラーが出ているということは正しく TypeScript の静的型検査が働いている証です! ですから落ち着いてエラーを修正することにしましょう :smile:
 
 エラーメッセージを読むと, `toUint32` 関数の引数の型が明示されていなかったことが原因だと分かります. 以下のように `toUint32` 関数の引数の型を明示します.
 

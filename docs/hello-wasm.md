@@ -4,7 +4,7 @@
 
 本節で作成するプロジェクトは以下のリポジトリで公開しています.
 
-* [mizdra / hello_world_wasm · GitLab](https://gitlab.mma.club.uec.ac.jp/mizdra/hello_world_wasm)
+* [mizdra/wasm-dev-book-hello-wasm](https://github.com/mizdra/wasm-dev-book-hello-wasm)
 
 :::
 
@@ -30,9 +30,9 @@ $ rustup target add wasm32-unknown-unknown
 インストールが終わったら [Cargo](https://rust-lang-ja.github.io/the-rust-programming-language-ja/1.6/book/getting-started.html#hello-cargo)[^4]を用いて Rust のプロジェクトを作成しましょう.
 
 ```bash
-$ cargo new --lib hello_world_wasm
-$ tree hello_world_wasm
-hello_world_wasm
+$ cargo new --lib wasm-dev-book-hello-wasm
+$ tree wasm-dev-book-hello-wasm
+wasm-dev-book-hello-wasm
 ├── Cargo.toml
 └── src
     └── lib.rs
@@ -74,7 +74,7 @@ $ cargo build --target=wasm32-unknown-unknown --release
 
 :::
 
-コンパイルが成功すれば `/target/wasm32-unknown-unknown/release/hello_world_wasm.wasm` が生成されているはずです. 早速これを JavaScript から実行してみましょう. `/index.html` を作成します.
+コンパイルが成功すれば `/target/wasm32-unknown-unknown/release/wasm_dev_book_hello_wasm.wasm` が生成されているはずです. 早速これを JavaScript から実行してみましょう. `/index.html` を作成します.
 
 ```html
 <!DOCTYPE html>
@@ -82,9 +82,9 @@ $ cargo build --target=wasm32-unknown-unknown --release
 
 <head>
   <meta charset="UTF-8">
-  <title>Hello, World! on WebAssembly</title>
+  <title>Hello, WebAssembly!</title>
   <script>
-    const wasm = './target/wasm32-unknown-unknown/release/hello_world_wasm.wasm'
+    const wasm = './target/wasm32-unknown-unknown/release/wasm_dev_book_hello_wasm.wasm'
     fetch(wasm)
       .then(response => response.arrayBuffer())
       .then(bytes => WebAssembly.instantiate(bytes, {}))
@@ -114,7 +114,7 @@ $ cargo build --target=wasm32-unknown-unknown --release
 もしかしたらこの説明に疑問を持った方がいるかもしれません. 何故なら先程 Rust コンパイラを用いて Rust から WebAssembly にコンパイルしたにも関わらず, JavaScript 上で再度コンパイルをしているからです. これは WebAssembly があくまでブラウザ[^8]が理解できるフォーマットであり, そのままではそのブラウザが動いている OS やハードウェアなどのシステムが理解できるフォーマットではないためです. WebAssembly を実行するには最初にブラウザが WebAssembly をそのブラウザが動いている OS やハードウェアが理解できる機械語にコンパイルし, それから実行する必要があります. ブラウザと WebAssembly は, ちょうど Java でいうところの JVM とバイトコードの関係のようなものなのです.
 :::
 
-さて, このコードを実際にブラウザで動かしてみます. 注意点として Fetch API は `file` URI Scheme[^9]をサポートしていないため, 任意の HTTP サーバで `index.html` と `hello_world_wasm.wasm` を配信してファイルに `http` URI Scheme でアクセスできるようにする必要があります. ここでは npm パッケージの http-server を使用します.
+さて, このコードを実際にブラウザで動かしてみます. 注意点として Fetch API は `file` URI Scheme[^9]をサポートしていないため, 任意の HTTP サーバで `index.html` と `wasm_dev_book_hello_wasm.wasm` を配信してファイルに `http` URI Scheme でアクセスできるようにする必要があります. ここでは npm パッケージの http-server を使用します.
 
 ```bash
 ## `npx` はnpmにバンドルされているコマンドです
@@ -141,7 +141,8 @@ const imports = {
     date_now: Date.now
   }
 };
-const wasm = "./target/wasm32-unknown-unknown/release/hello_world_wasm.wasm";
+const wasm =
+  "./target/wasm32-unknown-unknown/release/wasm_dev_book_hello_wasm.wasm";
 fetch(wasm)
   .then(response => response.arrayBuffer())
   // `WebAssembly.instantiate` の引数に `imports` を追加
@@ -229,7 +230,8 @@ const imports = {
     date_now: Date.now
   }
 };
-const wasm = "./target/wasm32-unknown-unknown/release/hello_world_wasm.wasm";
+const wasm =
+  "./target/wasm32-unknown-unknown/release/wasm_dev_book_hello_wasm.wasm";
 const toUint32 = num => num >>> 0;
 fetch(wasm)
   .then(response => response.arrayBuffer())
@@ -261,7 +263,7 @@ fetch(wasm)
 $ cargo build --target=wasm32-unknown-unknown
 
 ## `.wast` の中身を関数名で検索
-$ wasm-dis ./target/wasm32-unknown-unknown/debug/hello_world_wasm.wasm | grep rand
+$ wasm-dis ./target/wasm32-unknown-unknown/debug/wasm_dev_book_hello_wasm.wasm | grep rand
  (export "rand" (func $rand))
  (func $rand (; 3 ;) (type $6) (result i32)
 
