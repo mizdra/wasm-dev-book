@@ -2,7 +2,7 @@
 
 <div style="text-align: center;">
 
-![An image](./.vuepress/public/web-assembly-icon-256px.png)
+<img alt="WebAssembly logo" width="256px" src="./.vuepress/public/web-assembly-icon.svg" />
 
 </div>
 
