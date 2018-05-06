@@ -36,13 +36,11 @@ pub fn add(a: i32, b: i32) -> i32 {
 
 [前節](/hello-wasm.md)で書いたコードと全く同じですね. 次にこの Rust の関数を WebAssembly として呼び出す JavaScript `/src/index.js` を作成します.
 
-<!-- prettier-ignore-start -->
 ```javascript
 import { add } from './lib.rs'
 
 console.log(add(1, 2))
 ```
-<!-- prettier-ignore-end -->
 
 ES Modules の `import` 構文を用いて `lib.rs` を読み込もうとしています. Parcel はこの構文を見つけると自動で Rust を WebAssembly にコンパイルし, [前節](/hello-wasm.md)で解説したような JavaScript コードへと変換します. このように Parcel によって WebAssembly の fetch やコンパイル, インスタンス化といったプロセスが隠蔽され, Rust の関数を WebAssembly として呼び出すという本質的な作業に集中できるようになります.
 
@@ -142,7 +140,6 @@ pub fn rand() -> u32 {
 
 `/src/index.js` を `rand` 関数を呼び出すよう編集します.
 
-<!-- prettier-ignore-start -->
 ```javascript
 import { add, rand } from './lib.rs'
 
@@ -151,7 +148,6 @@ const toUint32 = (num) => num >>> 0
 console.log(add(1, 2))
 console.log(toUint32(rand()))
 ```
-<!-- prettier-ignore-end -->
 
 <!-- prettier-ignore -->
 [^17]: モジュールが更新されたら変更されたモジュールのみをビルドし, 自動でブラウザのページを更新する機能のことです.
@@ -206,7 +202,6 @@ pub fn sum(slice: &[i32]) -> i32 {
 
 符号付き整数のスライスを受け取り, その和を返す Rust の関数です. これを JavaScript 側から呼び出してみます.
 
-<!-- prettier-ignore-start -->
 ```javascript{1,7}
 import { add, rand, sum } from './lib.rs'
 
@@ -216,7 +211,6 @@ console.log(add(1, 2))
 console.log(toUint32(rand()))
 console.log(sum(new Int32Array([1, 2, 3, 4, 5]))) // `0` と出力される
 ```
-<!-- prettier-ignore-end -->
 
 なんと `15` ではなく `0` と出力されてしまいました. これは WebAssembly が引数や戻り値として `i32`, `u32`, `f32`, `i64`, `u64`, `f64` などの基本的な数値型以外をサポートしていないことに起因しています. 現状では, 配列や文字列といった数値型以外を扱いたい場合は [JavaScript, WebAssembly 双方からアクセス可能なメモリ `WebAssembly.Memory`](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_objects/WebAssembly/Memory) を利用する必要があります. JavaScript からメモリに配列を配置し, WebAssembly がメモリ上のバイト列をスライスとして読み込む... といったようにすれば先程の関数は動作しますが, 少々面倒です. よくよく考えてみるとメモリに配置したデータはいつ解放するのか, どのデータをメモリ上のどの位置に配置するのか, などなど色々なことを意識しなければならないことが分かります. 文字列や配列くらいメモリを意識せずにやり取りする方法は無いのでしょうか.
 

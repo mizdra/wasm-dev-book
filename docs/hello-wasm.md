@@ -111,8 +111,8 @@ $ cargo build --target=wasm32-unknown-unknown --release
 [^9]: `file:///path/to/file.ext` のようにローカルにあるファイルにアクセスするときに使う URI スキーマです.
 
 :::tip
-もしかしたらこの説明に疑問を持った方がいるかもしれません. 何故なら先程 Rust コンパイラを用いて Rust から WebAssembly にコンパイルしたにも関わらず, JavaScript 上で再度コンパイルをしているからです. これは WebAssembly があくまでブラウザ[^8]が理解できるフォーマットであり, そのままではそのブラウザが動いている OS やハードウェアなどのシステムが理解できるフォーマットではないためです. WebAssembly を実行するには最初にブラウザが WebAssembly をそのブラウザが動いている OS やハードウェアが理解できる機械語にコンパイルし, それから実行する必要があります. ブラウザと WebAssembly は, ちょうど Java でいうところの JVM とバイトコードの関係のようなものなのです.
-:::
+
+もしかしたらこの説明に疑問を持った方がいるかもしれません. 何故なら先程 Rust コンパイラを用いて Rust から WebAssembly にコンパイルしたにも関わらず, JavaScript 上で再度コンパイルをしているからです. これは WebAssembly があくまでブラウザ[^8]が理解できるフォーマットであり, そのままではそのブラウザが動いている OS やハードウェアなどのシステムが理解できるフォーマットではないためです. WebAssembly を実行するには最初にブラウザが WebAssembly をそのブラウザが動いている OS やハードウェアが理解できる機械語にコンパイルし, それから実行する必要があります. ブラウザと WebAssembly は, ちょうど Java でいうところの JVM とバイトコードの関係のようなものなのです. :::
 
 さて, このコードを実際にブラウザで動かしてみます. 注意点として Fetch API は `file` URI Scheme[^9]をサポートしていないため, 任意の HTTP サーバで `index.html` と `wasm_dev_book_hello_wasm.wasm` を配信してファイルに `http` URI Scheme でアクセスできるようにする必要があります. ここでは npm パッケージの [http-server](https://github.com/indexzero/http-server) を使用します.
 
@@ -138,21 +138,21 @@ WebAssembly から JavaScript の関数を呼び出す例も試してみまし�
 // 追加
 const imports = {
   env: {
-    date_now: Date.now
-  }
-};
+    date_now: Date.now,
+  },
+}
 const wasm =
-  "./target/wasm32-unknown-unknown/release/wasm_dev_book_hello_wasm.wasm";
+  './target/wasm32-unknown-unknown/release/wasm_dev_book_hello_wasm.wasm'
 fetch(wasm)
-  .then(response => response.arrayBuffer())
+  .then((response) => response.arrayBuffer())
   // `WebAssembly.instantiate` の引数に `imports` を追加
-  .then(bytes => WebAssembly.instantiate(bytes, imports))
-  .then(results => {
-    const { add, get_timestamp } = results.instance.exports;
-    console.log(add(1, 2));
+  .then((bytes) => WebAssembly.instantiate(bytes, imports))
+  .then((results) => {
+    const { add, get_timestamp } = results.instance.exports
+    console.log(add(1, 2))
     // 追加
-    console.log(get_timestamp());
-  });
+    console.log(get_timestamp())
+  })
 ```
 
 `WebAssembly.instantiate` の引数に WebAssembly 実行環境に渡したい関数が含まれるオブジェクトを指定します. `env` プロパティでネストしていることに注意して下さい.
@@ -227,21 +227,21 @@ pub fn rand() -> u32 {
 ```javascript
 const imports = {
   env: {
-    date_now: Date.now
-  }
-};
+    date_now: Date.now,
+  },
+}
 const wasm =
-  "./target/wasm32-unknown-unknown/release/wasm_dev_book_hello_wasm.wasm";
-const toUint32 = num => num >>> 0;
+  './target/wasm32-unknown-unknown/release/wasm_dev_book_hello_wasm.wasm'
+const toUint32 = (num) => num >>> 0
 fetch(wasm)
-  .then(response => response.arrayBuffer())
-  .then(bytes => WebAssembly.instantiate(bytes, imports))
-  .then(results => {
-    const { add, get_timestamp, rand } = results.instance.exports;
-    console.log(add(1, 2));
-    console.log(get_timestamp());
-    console.log(toUint32(rand()));
-  });
+  .then((response) => response.arrayBuffer())
+  .then((bytes) => WebAssembly.instantiate(bytes, imports))
+  .then((results) => {
+    const { add, get_timestamp, rand } = results.instance.exports
+    console.log(add(1, 2))
+    console.log(get_timestamp())
+    console.log(toUint32(rand()))
+  })
 ```
 
 <!-- prettier-ignore -->
@@ -256,6 +256,7 @@ fetch(wasm)
 `toUint32` 関数は JavaScript の数値を 32bit 符号無し整数として扱うためのトリックです. `rand` 関数は Rust のコードでは `u32` 型を返すことになっていますが, WebAssembly にコンパイルすると `i32` 型を返す関数へと変換されます[^13]. 戻り値を `u32` 型で表した時に `2^31` 未満であれば JavaScript 側で得られる値に変わりはありませんが, `2^31` 以上の場合は戻り値から `2^32` を引いた値が JavaScript 側で得られる値となります[^14]. 今回は `rand` 関数の戻り値は `u32` 型で表した時に `2^31` 以上となる可能性があるため, `toUint32` 関数を使って戻り値を 32bit 符号無し整数として扱っています[^15].
 
 :::tip
+
 この暗黙の型変換は WebAssembly を wast 形式と呼ばれる S 式ベースのテキスト表現へと変換すると確認できます. `.wasm` を `.wast` に変換するには [Binaryen](https://github.com/WebAssembly/binaryen) が提供する `wasm-dis` コマンドを使います.
 
 ```bash

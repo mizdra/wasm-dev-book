@@ -60,7 +60,6 @@ TypeScript の設定ファイル `/tsconfig.json` を次のように作成しま
 
 TypeScript のトランスパイルが通るように Webpack の設定を書き換えます.
 
-<!-- prettier-ignore-start -->
 ```js{4-9,11-12}
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
@@ -78,7 +77,6 @@ module.exports = {
   plugins: [new HtmlWebpackPlugin()],
 }
 ```
-<!-- prettier-ignore-end -->
 
 `/src/index.js` を `/src/index.ts` にリネームします.
 
@@ -117,7 +115,6 @@ ERROR in ./src/index.ts
 
 エラーメッセージを読むと, `toUint32` 関数の引数の型が明示されていなかったことが原因だと分かります. 以下のように `toUint32` 関数の引数の型を明示します.
 
-<!-- prettier-ignore-start -->
 ```typescript{1-2}
 // 引数の型を明示
 const toUint32 = (num: number) => num >>> 0
@@ -126,7 +123,6 @@ export const date_now = Date.now
 export const console_log = console.log
 // ...
 ```
-<!-- prettier-ignore-end -->
 
 それでは気を取り直して再度実行してみます.
 
