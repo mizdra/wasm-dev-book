@@ -10,14 +10,13 @@ module.exports = {
     ['meta', { property: 'og:title', content: 'WebAssembly 開発環境構築の本' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:url', content: 'https://wasm-dev-book.netlify.com' }],
-    ['meta', { property: 'og:image', content: '/icon-256x256.png?0' }],
+    ['meta', { property: 'og:image', content: 'https://wasm-dev-book.netlify.com/icon-256x256.png?0' }],
     ['meta', { property: 'og:description', content: 'Rust を用いた WebAssembly の開発環境を構築する手法を紹介する本.' }],
     ['meta', { property: 'og:locale', content: 'ja_JP' }],
     ['meta', { property: 'og:site_name', content: 'WebAssembly 開発環境構築の本' }],
     ['meta', { name: 'twitter:card', content: 'summary' }],
     ['meta', { name: 'twitter:site', content: '@mizdra' }],
     ['meta', { name: 'twitter:creator', content: '@mizdra' }],
-    ['meta', { name: 'twitter:image', content: '/icon-256x256.png?0' }],
 
     // Other Icons
     ['meta', { name: 'msapplication-TileColor', content: '#2d88ef' }],
