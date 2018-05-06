@@ -10,7 +10,7 @@ module.exports = {
     ['meta', { property: 'og:title', content: 'WebAssembly 開発環境構築の本' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:url', content: 'https://wasm-dev-book.netlify.com' }],
-    ['meta', { property: 'og:image', content: '/icon-256x256.png' }],
+    ['meta', { property: 'og:image', content: '/icon-256x256.png?0' }],
     ['meta', { property: 'og:description', content: 'Rust を用いた WebAssembly の開発環境を構築する手法を紹介する本.' }],
     ['meta', { property: 'og:locale', content: 'ja_JP' }],
     ['meta', { property: 'og:site_name', content: 'WebAssembly 開発環境構築の本' }],
