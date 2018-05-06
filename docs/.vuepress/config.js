@@ -17,6 +17,7 @@ module.exports = {
     ['meta', { name: 'twitter:card', content: 'summary' }],
     ['meta', { name: 'twitter:site', content: '@mizdra' }],
     ['meta', { name: 'twitter:creator', content: '@mizdra' }],
+    ['meta', { name: 'twitter:image', content: '/icon-256x256.png?0' }],
 
     // Other Icons
     ['meta', { name: 'msapplication-TileColor', content: '#2d88ef' }],
