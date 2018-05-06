@@ -29,6 +29,7 @@
 * C/C++ を用いた WebAssembly の開発環境を構築する手法の解説は目的ではない
   * 本書では Rust のみを扱う
 * WebAssembly や JavaScript の仕様変更の追従が目的ではない
+  * 仕様や関連技術の変化が非常に活発なため, WebAssembly 関連の最新情報を 本書に反映することは困難
   * 本書は著者が[大学のサークルで発行した部誌の記事](https://wiki.mma.club.uec.ac.jp/Booklet#A2018.2BXnQ_.2BZiVT9w-)を Web 向けに編集・加筆したものであり, 最新の情報を Web で提供することが目的ではない
 
 ## 本書の対象読者
