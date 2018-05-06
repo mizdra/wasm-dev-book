@@ -8,6 +8,9 @@
 
 この文章は Rust を用いた WebAssembly の開発環境を構築する手法を紹介するために作成されました.
 
+<!-- prettier-ignore -->
+ハッシュタグは [#WASMの本](https://twitter.com/search?f=tweets&q=%23WASM%E3%81%AE%E6%9C%AC) です.
+
 ## 本書の目的
 
 * Rust を用いた WebAssembly の開発環境を構築する手法を知ること
