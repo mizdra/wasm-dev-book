@@ -1,7 +1,7 @@
 {
   "name": "wasm-dev-book",
   "version": "0.0.0",
-  "description": "WebAssembly 開発環境構築の解説書.",
+  "description": "Rust を用いた WebAssembly の開発環境を構築する手法を紹介する本.",
   "main": "index.js",
   "repository": "https://github.com/mizdra/wasm-dev-book",
   "author": "mizdra <pp.mizdra@gmail.com>",

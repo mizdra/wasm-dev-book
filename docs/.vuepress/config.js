@@ -1,6 +1,6 @@
 module.exports = {
   title: 'WebAssembly 開発環境構築の本',
-  description: 'WebAssembly 開発環境構築の解説書.',
+  description: 'Rust を用いた WebAssembly の開発環境を構築する手法を紹介する本.',
   head: [
     ['meta', { name: 'theme-color', content: '#222' }],
     ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' }],
@@ -11,7 +11,7 @@ module.exports = {
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:url', content: 'https://wasm-dev-book.netlify.com' }],
     ['meta', { property: 'og:image', content: '/icon-256x256.png' }],
-    ['meta', { property: 'og:description', content: 'WebAssembly 開発環境構築の解説書.' }],
+    ['meta', { property: 'og:description', content: 'Rust を用いた WebAssembly の開発環境を構築する手法を紹介する本.' }],
     ['meta', { property: 'og:locale', content: 'ja_JP' }],
     ['meta', { property: 'og:site_name', content: 'WebAssembly 開発環境構築の本' }],
     ['meta', { name: 'twitter:card', content: 'summary' }],

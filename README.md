@@ -1,6 +1,6 @@
 # WebAssembly 開発環境構築の本
 
-WebAssembly 開発環境構築の解説書.
+Rust を用いた WebAssembly の開発環境を構築する手法を紹介する本.
 
 ## Requirements
 
