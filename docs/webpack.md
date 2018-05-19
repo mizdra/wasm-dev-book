@@ -159,15 +159,15 @@ crate-type = ["cdylib"]
 
 [Parcel の利用](/parcel.md) の節で出てきた npm-scripts と比べると随分と複雑です :weary: 本書は開発環境の構築に焦点を当てているので, 利用しているコマンド (`wasm-bindgen`, `cargo watch`, `webpack-dev-server` など) の機能やオプションの解説は行いませんが, ここではそれぞれの npm-scripts の役割について簡単に補足しておきます.
 
-| スクリプト名          | 役割                                                                                                                         |
-| :--------------: | :--------------------------------------------------------------------------------------------------------------------------- |
-| `build:wasm`     | Rust のソースコードを WebAssembly にコンパイルする.                                                                                          |
-| `postbuild:wasm` | `build:wasm` コマンドが実行された直後に, 生成された WebAssembly を元に JavaScript ラッパーを生成する.                                             |
-| `build:js`       | Webpack で JavaScript のビルド (モジュールの依存解決など) をする.                                                                            |
-| `build`          | 本番用ビルドを行う. `build:wasm`, `postbuild:wasm`, `build:js` コマンドを順番に実行する.                                                  |
+| スクリプト名     | 役割                                                                                                                                                                             |
+| :--------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build:wasm`     | Rust のソースコードを WebAssembly にコンパイルする.                                                                                                                              |
+| `postbuild:wasm` | `build:wasm` コマンドが実行された直後に, 生成された WebAssembly を元に JavaScript ラッパーを生成する.                                                                            |
+| `build:js`       | Webpack で JavaScript のビルド (モジュールの依存解決など) をする.                                                                                                                |
+| `build`          | 本番用ビルドを行う. `build:wasm`, `postbuild:wasm`, `build:js` コマンドを順番に実行する.                                                                                         |
 | `dev:wasm`       | プロジェクトのファイル (Rust のソースコード以外も含む) が変更されたら `build:wasm` コマンドを実行する. ただし `wasm-bindgen` コマンドで生成されるファイルは監視対象から除外する. |
-| `dev:js`         | JavaScript ファイルが更新されたら Webpack で JavaScript のビルドをする.                                                                       |
-| `dev`            | 開発用ビルドを行う. `dev:wasm`, `dev:js` コマンドを並列に実行する.                                                                        |
+| `dev:js`         | JavaScript ファイルが更新されたら Webpack で JavaScript のビルドをする.                                                                                                          |
+| `dev`            | 開発用ビルドを行う. `dev:wasm`, `dev:js` コマンドを並列に実行する.                                                                                                               |
 
 :::warning
 
@@ -223,7 +223,12 @@ Use WebAssembly.instantiate.
 
 これは WebAssembly を含むプロジェクトをビルドした時に Google Chrome で実行できないコードが出力されるという Webpack のバグに起因しています (参考: [webpack/webpack#6475](https://github.com/webpack/webpack/issues/6475)).
 
-もし上記のエラーが出た場合は Google Chrome の代わりに Mozilla Firefox を使って下さい.
+この問題は Webpack v4.8.0 にて修正されました. もし上記のエラーが出た場合は次のコマンドを実行して Webpack をアップデートして下さい.
+
+```bash
+$ npm update webpack
+```
+
 :::
 
 ## WebAssembly から JavaScript の関数を呼び出す
