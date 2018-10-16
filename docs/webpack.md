@@ -23,8 +23,8 @@ Webpack は Web フロントエンドのための拡張性の高い, 高機能�
 wasm-bindgen は Nightly 版の Rust に依存しています[^20]. 次のコマンドで Nightly 版をインストールして下さい.
 
 ```bash
-$ rustup install nightly-2018-05-04
-$ rustup target add wasm32-unknown-unknown --toolchain nightly-2018-05-04
+$ rustup install nightly-2018-09-10
+$ rustup target add wasm32-unknown-unknown --toolchain nightly-2018-09-10
 ```
 
 :::warning
@@ -47,7 +47,7 @@ $ npm install --save-dev webpack webpack-cli webpack-dev-server html-webpack-plu
 `/rust-toolchain` を作成し, ビルド時に利用する Rust の toolchain のバージョンを指定します.
 
 ```bash
-$ echo nightly-2018-05-04 > rust-toolchain
+$ echo nightly-2018-09-10 > rust-toolchain
 ```
 
 :::tip
@@ -87,8 +87,6 @@ rustc 1.27.0-nightly (e82261dfb 2018-05-03)
 `/src/lib.rs` を次のように編集します.
 
 ```rust
-#![feature(proc_macro, wasm_custom_section, wasm_import_module)]
-
 extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
