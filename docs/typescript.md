@@ -16,18 +16,7 @@ TypeScript は JavaScript に静的型を導入し, 実行する前に型レベ�
 
 [Webpack の利用](/webpack.md)の節で作成したプロジェクトに対して TypeScript を導入してみます.
 
-はじめに, [Webpack の利用](/webpack.md)の節で作成したリポジトリをコピーし, プロジェクト名を変更します.
-
-```bash
-$ cp -r wasm-dev-book-webpack wasm-dev-book-webpack-typescript
-$ cd wasm-dev-book-webpack-typescript
-
-## プロジェクト名の変更 (エディタの置換機能でやっても良い)
-$ find . -type f | xargs sed -i "s/wasm-dev-book-webpack/wasm-dev-book-webpack-typescript/g"
-$ find . -type f | xargs sed -i "s/wasm_dev_book_webpack/wasm_dev_book_webpack_typescript/g"
-```
-
-TypeScript のトランスパイルに必要な npm パッケージをインストールします.
+はじめに, TypeScript のトランスパイルに必要な npm パッケージをインストールします.
 
 ```bash
 $ npm install --save-dev typescript ts-loader
@@ -90,10 +79,10 @@ $ mv ./src/index.js ./src/index.ts
   // ...
   "scripts": {
     "build:wasm": "cargo build --target wasm32-unknown-unknown --release",
-    "postbuild:wasm": "wasm-bindgen target/wasm32-unknown-unknown/release/wasm_dev_book_webpack_typescript.wasm --out-dir src",
+    "postbuild:wasm": "wasm-bindgen target/wasm32-unknown-unknown/release/wasm_dev_book_webpack.wasm --out-dir src",
     "build:js": "webpack --mode production",
     "build": "run-s build:wasm build:js",
-    "dev:wasm": "cargo watch -i 'src/{wasm_dev_book_webpack_typescript_bg.wasm,wasm_dev_book_webpack_typescript.js,wasm_dev_book_webpack_typescript.d.ts}' -s 'npm run build:wasm'",
+    "dev:wasm": "cargo watch -i 'src/{wasm_dev_book_webpack_bg.wasm,wasm_dev_book_webpack.js,wasm_dev_book_webpack.d.ts}' -s 'npm run build:wasm'",
     "dev:js": "webpack-dev-server --mode development",
     "dev": "run-p dev:wasm dev:js"
   },
